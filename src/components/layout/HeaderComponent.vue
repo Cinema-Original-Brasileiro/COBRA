@@ -1,5 +1,11 @@
 <script setup>
+import { useRoute } from 'vue-router';
 import Logo from '/images/logo-lightmode.svg'
+
+const route = useRoute();
+
+const paginaAtual = (path) => ( route.path === path ? 'active' : 'inactive' );
+
 </script>
 
 <template>
@@ -11,20 +17,20 @@ import Logo from '/images/logo-lightmode.svg'
       </h1>
 
       <ul class="nav-list">
-        <li>Início</li>
-        <li>Filmes</li>
-        <li>Atores</li>
-        <li>Produtoras</li>
+        <li :class="paginaAtual('/')">Início</li>
+        <li :class="paginaAtual('/filmes')">Filmes</li>
+        <li :class="paginaAtual('/atores')">Atores</li>
+        <li :class="paginaAtual('/produtoras')">Produtoras</li>
       </ul>
 
       <ul class="icon-list">
-        <li >
+        <li title="Alternar modo">
           <span class="mdi mdi-weather-sunny" />
         </li>
-        <li>
+        <li title="Favoritos">
           <span class="mdi mdi-heart-outline icon-center" />
         </li>
-        <li>
+        <li title="Assistir mais tarde">
           <span class="mdi mdi-clock-outline" />
         </li>
       </ul>
@@ -33,6 +39,8 @@ import Logo from '/images/logo-lightmode.svg'
 </template>
 
 <style scoped>
+
+  /*==== ESTILIZAÇÃO GERAL DO HEADER ====*/
 
   header {
     padding: 0 10vw;
@@ -77,5 +85,21 @@ import Logo from '/images/logo-lightmode.svg'
     border-radius: 2px;
   }
 
+  /*===ESTILIZAÇÃO DOS ITENS DE NAVEGAÇÃO==*/
+
+  .active {
+    font-weight: 600;
+  }
+
+  .inactive {
+    color: #8c8c8c;
+    transition: .2s;
+
+    &:hover {
+      color: #b2b2b2;
+      transform: translateY(-1.5px);
+      transition: .2s;
+    }
+  }
 
 </style>
