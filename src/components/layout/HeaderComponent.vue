@@ -34,6 +34,16 @@ import Logo from '/images/logo-lightmode.svg'
 
 <style scoped>
 
+  header {
+    padding: 0 10vw;
+    background: rgba(255, 245, 238, 0.5);
+    backdrop-filter: blur(5px);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    width: 100%;;
+  }
+
   .nav-bar{
     display: flex;
     justify-content: space-between;

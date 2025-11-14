@@ -27,12 +27,12 @@ ol[role='list'] {
 }
 
 body {
+  margin: 0;
   min-height: 100vh;
-  line-height: 1.5;
+  line-height: normal;
   background-color: #FFF5EE;
   color: #080808;
   font-family: 'Poppins', 'sans-serif';
-  padding: 0 10vw;
 }
 
 h1, h2, h3, h4,
@@ -68,5 +68,9 @@ textarea:not([rows]) {
 
 :target {
   scroll-margin-block: 5ex;
+}
+
+main{
+  padding: 0 10vw;
 }
 
