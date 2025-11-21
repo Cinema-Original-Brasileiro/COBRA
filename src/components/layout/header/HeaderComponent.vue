@@ -2,16 +2,24 @@
 import { ref } from 'vue'
 import { useRoute } from 'vue-router'
 import Logo from '/images/logo-lightmode.svg'
-import BarraPesquisaComp from '../BarraPesquisaComp.vue'
+import BarraPesquisaComp from './BarraPesquisaComp.vue'
+import DropDownComp from './DropDownComp.vue'
 
 const route = useRoute()
 
+// Verifica a página atual para o css
 const paginaAtual = (path) => (route.path === path ? 'active' : 'inactive')
 
+// Controla  a exibição da barra de pesquisa
 const pesquisaAtiva = ref(false)
-
 const alternarPesquisa = () => {
   pesquisaAtiva.value = !pesquisaAtiva.value
+}
+
+// Controla a exibição do dropdown
+const dropAberto = ref(false)
+const alternarDrop = () => {
+  dropAberto.value = !dropAberto.value
 }
 </script>
 
@@ -22,23 +30,21 @@ const alternarPesquisa = () => {
         <img :src="Logo" alt="logo" />
       </h1>
 
-
       <ul v-if="pesquisaAtiva === false" class="nav-list">
         <li :class="paginaAtual('/')">Início</li>
-        <li :class="paginaAtual('/filmes')">Filmes</li>
+        <li :class="paginaAtual('/filmes')">
+          Filmes
+          <span @click="alternarDrop" :class="dropAberto ? 'mdi mdi-chevron-up' : 'mdi mdi-chevron-down'" />
+          <drop-down-comp style="position: absolute;" v-if="dropAberto" />
+        </li>
         <li :class="paginaAtual('/atores')">Atores</li>
         <li :class="paginaAtual('/produtoras')">Produtoras</li>
-        <barra-pesquisa-comp @click="alternarPesquisa"/>
+        <li title="Barra de pesquisa"><barra-pesquisa-comp @click="alternarPesquisa" /></li>
       </ul>
 
       <div class="barra-pesquisa" v-else>
-        <input type="text" placeholder="Busque por algo">
-        <span
-          class="mdi mdi-close"
-          title="Fechar pesquisa"
-          @click="alternarPesquisa"
-          >
-        </span>
+        <input type="text" placeholder="Busque por algo" />
+        <span class="mdi mdi-close" title="Fechar pesquisa" @click="alternarPesquisa"> </span>
       </div>
 
       <ul class="icon-list">
@@ -119,23 +125,28 @@ header {
   }
 }
 
+.nav-list li span {
+  margin-left: 0.5vw;
+  position: absolute;
+}
+
 /* BARRA DE PESQUISA */
 
-.barra-pesquisa{
+.barra-pesquisa {
   position: relative;
 }
 
 .barra-pesquisa input {
   padding: 0.5rem 8rem 0.5rem 1rem;
-  background-color: #FFF5EE;
+  background-color: #fff5ee;
   border: 2px solid #b2b2b2;
   border-radius: 5px;
-  transition: .2s;
+  transition: 0.2s;
 }
 
 .barra-pesquisa input:focus {
   outline: none;
-  transition: .2s;
+  transition: 0.2s;
   border: 2px solid #8c8c8c;
   box-shadow: 0 0 5px #b2b2b2;
 }
@@ -148,5 +159,4 @@ header {
   color: #8c8c8c;
   cursor: pointer;
 }
-
 </style>
