@@ -21,16 +21,20 @@ export const useMoviesStore = defineStore('movies', () => {
   const ultimosLancamentos = computed(() => state.ultimosLancamentos);
   const currentMovie = computed(() => state.currentMovie);
 
-  const pageMovieUp = () => {
+  const moviePageUp = () => {
     state.page = state.page + 1;
     moviesList();
+    popularMoviesList();
+    ultimosLancamentosList();
   };
 
-  const pageMovieDown = () => {
+  const moviePageDown = () => {
     if (state.page > 1) {
       state.page = state.page - 1;
+      moviesList();
+      popularMoviesList();
+      ultimosLancamentosList();
     }
-    moviesList();
   };
 
   const moviesList = async () => {
@@ -117,5 +121,5 @@ export const useMoviesStore = defineStore('movies', () => {
     };
   };
 
-  return { movies, topFive, popularMovies, ultimosLancamentos, currentMovie, moviesList, pageMovieUp, pageMovieDown, moviesTopFiveList, popularMoviesList, ultimosLancamentosList, movieDetail };
+  return { movies, topFive, popularMovies, ultimosLancamentos, currentMovie, moviesList, moviePageUp, moviePageDown, moviesTopFiveList, popularMoviesList, ultimosLancamentosList, movieDetail };
 });
