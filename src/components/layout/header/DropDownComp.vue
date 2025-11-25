@@ -26,6 +26,8 @@
       padding: 0.6rem 0;
       cursor: pointer;
       transition: 0.5s;
+      color: #8c8c8c;
+      font-weight: 500;
 
       &:hover {
         color: #479414;

@@ -1,9 +1,11 @@
 <script setup>
 import { ref } from 'vue'
+import { onClickOutside } from '@vueuse/core'
 import { useRoute } from 'vue-router'
 import Logo from '/images/logo-lightmode.svg'
 import BarraPesquisaComp from './BarraPesquisaComp.vue'
 import DropDownComp from './DropDownComp.vue'
+import router from '@/router'
 
 const route = useRoute()
 
@@ -11,13 +13,21 @@ const route = useRoute()
 const paginaAtual = (path) => (route.path === path ? 'active' : 'inactive')
 
 // Controla  a exibição da barra de pesquisa
-const pesquisaAtiva = ref(false)
+const pesquisaAtiva = ref(false);
+const barraPesquisaTarget = ref(null);
+onClickOutside(barraPesquisaTarget, () => {
+  pesquisaAtiva.value = false
+})
 const alternarPesquisa = () => {
   pesquisaAtiva.value = !pesquisaAtiva.value
 }
 
 // Controla a exibição do dropdown
-const dropAberto = ref(false)
+const dropAberto = ref(false);
+const dropdownTarget = ref(null);
+onClickOutside(dropdownTarget, () => {
+  dropAberto.value = false
+})
 const alternarDrop = () => {
   dropAberto.value = !dropAberto.value
 }
@@ -27,22 +37,22 @@ const alternarDrop = () => {
   <header>
     <nav class="nav-bar">
       <h1>
-        <img :src="Logo" alt="logo" />
+        <img @click="router.push('/')" :src="Logo" alt="logo" />
       </h1>
 
       <ul v-if="pesquisaAtiva === false" class="nav-list">
-        <li :class="paginaAtual('/')">Início</li>
-        <li :class="paginaAtual('/filmes')">
+        <li @click="router.push('/')" :class="paginaAtual('/')">Início</li>
+        <li @click="router.push('/movies')" :class="paginaAtual('/movies')" ref="dropdownTarget" style="margin-right: 1vw;">
           Filmes
-          <span @click="alternarDrop" :class="dropAberto ? 'mdi mdi-chevron-up' : 'mdi mdi-chevron-down'" />
+          <span @click.stop="alternarDrop" :class="dropAberto ? 'mdi mdi-chevron-up' : 'mdi mdi-chevron-down'" ></span>
           <drop-down-comp style="position: absolute;" v-if="dropAberto" />
         </li>
-        <li :class="paginaAtual('/atores')">Atores</li>
-        <li :class="paginaAtual('/produtoras')">Produtoras</li>
+        <li :class="paginaAtual('/actors')" @click="router.push('/actors')">Atores</li>
+        <li :class="paginaAtual('/companies')" @click="router.push('/companies')">Produtoras</li>
         <li title="Barra de pesquisa"><barra-pesquisa-comp @click="alternarPesquisa" /></li>
       </ul>
 
-      <div class="barra-pesquisa" v-else>
+      <div class="barra-pesquisa" ref="barraPesquisaTarget" v-else>
         <input type="text" placeholder="Busque por algo" />
         <span class="mdi mdi-close" title="Fechar pesquisa" @click="alternarPesquisa"> </span>
       </div>
@@ -51,10 +61,10 @@ const alternarDrop = () => {
         <li title="Alternar modo">
           <span class="mdi mdi-weather-sunny" />
         </li>
-        <li title="Favoritos">
+        <li @click="router.push('/favorites')" title="Favoritos">
           <span class="mdi mdi-heart-outline icon-center" />
         </li>
-        <li title="Assistir mais tarde">
+        <li @click="router.push('/watch-later')" title="Assistir mais tarde">
           <span class="mdi mdi-clock-outline" />
         </li>
       </ul>
