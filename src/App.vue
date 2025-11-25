@@ -1,8 +1,14 @@
 <script setup>
+import HeaderComponent from '@/components/layout/header/HeaderComponent.vue';
+
 </script>
 
+
 <template>
-  <router-view />
+  <header-component />
+  <main>
+    <router-view />
+  </main>
 </template>
 
 <style scoped>

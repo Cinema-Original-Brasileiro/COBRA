@@ -21,13 +21,15 @@ figure, blockquote, dl, dd {
 }
 
 ul[role='list'],
+li,
 ol[role='list'] {
   list-style: none;
 }
 
 body {
+  margin: 0;
   min-height: 100vh;
-  line-height: 1.5;
+  line-height: normal;
   background-color: #FFF5EE;
   color: #080808;
   font-family: 'Poppins', 'sans-serif';
@@ -48,6 +50,11 @@ a:not([class]) {
   color: currentColor;
 }
 
+a{
+  text-decoration: none;
+  color: inherit;
+}
+
 img,
 picture {
   max-width: 100%;
@@ -66,5 +73,9 @@ textarea:not([rows]) {
 
 :target {
   scroll-margin-block: 5ex;
+}
+
+main{
+  padding: 0 10vw;
 }
 
