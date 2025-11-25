@@ -12,6 +12,7 @@ export const useMoviesStore = defineStore('movies', () => {
     popularMovies: [],
     ultimosLancamentos: [],
     currentMovie: {},
+    castMovie: [],
     page: 1,
   });
 
@@ -20,6 +21,7 @@ export const useMoviesStore = defineStore('movies', () => {
   const popularMovies = computed(() => state.popularMovies);
   const ultimosLancamentos = computed(() => state.ultimosLancamentos);
   const currentMovie = computed(() => state.currentMovie);
+  const castMovie = computed(() => state.castMovie);
 
   const moviePageUp = () => {
     state.page = state.page + 1;
@@ -121,5 +123,25 @@ export const useMoviesStore = defineStore('movies', () => {
     };
   };
 
-  return { movies, topFive, popularMovies, ultimosLancamentos, currentMovie, moviesList, moviePageUp, moviePageDown, moviesTopFiveList, popularMoviesList, ultimosLancamentosList, movieDetail };
+  const castMovieList = async (movieId) => {
+    try {
+      const response = await api.get(`movie/${movieId}/credits`, {
+        params: {
+          language: 'pt-BR',
+      }}
+    );
+    
+    const resultado = response.data.cast;
+
+    const filterCast = resultado.filter((individual) => individual.known_for_department === 'Acting' || individual.known_for_department === 'Directing');
+
+    state.castMovie = filterCast;
+
+    } catch(error) {
+      console.error('Erro elenco do filme ', error);
+      throw error;
+    }
+  };
+
+  return { movies, topFive, popularMovies, ultimosLancamentos, currentMovie, castMovie, moviesList, moviePageUp, moviePageDown, moviesTopFiveList, popularMoviesList, ultimosLancamentosList, movieDetail, castMovieList };
 });
