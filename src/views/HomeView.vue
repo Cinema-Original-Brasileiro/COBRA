@@ -1,5 +1,5 @@
 <script setup>
-import BannerSection from '@/components/sections/BannerSection.vue';
+import BannerSection from '@/components/sections/home/BannerSection.vue';
 </script>
 
 <template>
