@@ -13,15 +13,15 @@ const firstMovies = computed(() => {
 
 // Sistema de carrosel
 const currentIndex = ref(0)
-// const totalMovies = computed(() => firstMovies.value.length)
+const totalMovies = computed(() => firstMovies.value.length)
 
-// const nextMovie = () => {
-//   currentIndex.value = (currentIndex.value + 1) % totalMovies.value
-// }
+const nextMovie = () => {
+  currentIndex.value = (currentIndex.value + 1) % totalMovies.value
+}
 
-// const prevMovie = () => {
-//   currentIndex.value = (currentIndex.value - 1 + totalMovies.value) % totalMovies.value
-// }
+const prevMovie = () => {
+  currentIndex.value = (currentIndex.value - 1 + totalMovies.value) % totalMovies.value
+}
 
 // Filme atual
 const movie = computed(() => firstMovies.value[currentIndex.value])
@@ -60,6 +60,16 @@ onMounted(async () => {
         <h1 v-else>{{ movie?.title}}</h1>
         <p class="overview">{{ movie?.overview }}</p>
       </div>
+      <button
+        class="prev-button"
+        @click="prevMovie">
+        <span class="mdi mdi-chevron-left"></span>
+      </button>
+      <button
+        class="next-button"
+        @click="nextMovie">
+        <span class="mdi mdi-chevron-right"></span>
+      </button>
     </div>
   </section>
 </template>
@@ -71,6 +81,7 @@ onMounted(async () => {
   background-position: center;
   background-repeat: no-repeat;
   padding: 5vw 10vw;
+  position: relative;
 }
 
 .banner-content {
@@ -93,6 +104,29 @@ onMounted(async () => {
     margin-top: 2vw;
     font-size: 1rem;
   }
+}
+
+.prev-button, .next-button {
+  position: absolute;
+  background-color: #D9D9D9;
+  border: none;
+  border-radius: 100%;
+  cursor: pointer;
+  top: 50%;
+  & span {
+    font-size: 2rem;
+    color: #444444;
+  }
+  &:hover {
+    background-color: #BFBFBF;
+    transition: .3s;
+  }
+}
+.prev-button {
+  left: 2vw;
+}
+.next-button {
+  right: 2vw;
 }
 
 </style>
