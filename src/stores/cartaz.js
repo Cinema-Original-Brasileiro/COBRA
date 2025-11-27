@@ -5,8 +5,9 @@ import { reactive, computed } from 'vue';
 export const useCartazStore = defineStore('cartaz', () => {
   const state = reactive({
     cartazMovies: [],
+    logos: {},
   });
-  
+
   const cartazMovies = computed(() => state.cartazMovies);
   const cartazMoviesBr = computed(() => state.cartazMovies.filter((m) => m.original_language == 'pt'));
 
@@ -28,6 +29,29 @@ export const useCartazStore = defineStore('cartaz', () => {
     }
   };
 
-  return { cartazMovies, cartazList, cartazMoviesBr };
+  const logosList = async (movieId) => {
+    try {
+      const response = await api.get(`movie/${movieId}/images` , {
+        params: {
+          include_image_language: 'pt-BR, null',
+        }
+      });
+
+      const logo = response.data.logos?.[0]
+      state.logos[movieId] = logo;
+      return logo;
+    } catch (error) {
+      console.error('Erro ao buscar logos', error);
+    }
+  }
+
+  const addLogoToMovie = async (movies) => {
+    for (const m of movies) {
+      const logo = await logosList(m.id);
+      m.logo_path = logo?.file_path || null;
+    }
+  }
+
+  return { cartazMovies, cartazList, cartazMoviesBr, logosList, addLogoToMovie };
 
 })

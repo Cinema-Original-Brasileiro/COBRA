@@ -1,6 +1,7 @@
 <script setup>
+import BannerSection from '@/components/sections/BannerSection.vue';
 </script>
 
 <template>
-  <h1>Home</h1>
+  <BannerSection />
 </template>
