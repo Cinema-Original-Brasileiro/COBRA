@@ -4,7 +4,6 @@ import { useCartazStore } from '@/stores/cartaz'
 
 const cartazStore = useCartazStore()
 
-
 // Pega apenas o 5 primeiros filmes e remove repetidos
 const firstMovies = computed(() => {
   const uniqueMovies = [...new Set(cartazStore.cartazMoviesBr)]
@@ -31,10 +30,12 @@ const backgroundImage = computed(() => {
   if (!movie.value) return {}
   return {
     backgroundImage: `
-      linear-gradient(to right, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0)),
+      linear-gradient(to right, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0)),
       url(https://image.tmdb.org/t/p/original${movie.value.backdrop_path})`,
   }
-});
+})
+
+//
 
 onMounted(async () => {
   let page = 1
@@ -43,19 +44,20 @@ onMounted(async () => {
     page++
   }
 
-  await cartazStore.addLogoToMovie(cartazStore.cartazMoviesBr);
+  await cartazStore.addLogoToMovie(cartazStore.cartazMoviesBr)
 })
-
 </script>
 
 <template>
   <section class="banner-section">
     <div :style="backgroundImage" class="banner-item">
-
       <div class="banner-content">
         <p><span class="mdi mdi-movie-open-outline"></span> AGORA NOS CINEMAS</p>
-        <img v-if="movie?.logo_path" :src="`https://image.tmdb.org/t/p/original${movie?.logo_path}`"
-          :alt="movie?.title" />
+        <img
+          v-if="movie?.logo_path"
+          :src="`https://image.tmdb.org/t/p/original${movie?.logo_path}`"
+          :alt="movie?.title"
+        />
         <h1 v-else>{{ movie?.title }}</h1>
         <p class="overview">{{ movie?.overview }}</p>
       </div>
@@ -70,14 +72,19 @@ onMounted(async () => {
       </div>
 
       <div class="btns">
-        <button class="btn-primary">
-          Ver Detalhes
-        </button>
-        <button class="btn-secondary">
-          Assistir Mais Tarde
-        </button>
+        <button class="btn-primary">Ver Detalhes</button>
+        <button class="btn-secondary">Assistir Mais Tarde</button>
       </div>
 
+      <div class="count">
+        <span
+          v-for="m in totalMovies"
+          :key="m"
+          class="mdi mdi-circle"
+          :class="{ active: currentIndex === (m - 1) }"
+        >
+        </span>
+      </div>
     </div>
   </section>
 </template>
@@ -120,7 +127,7 @@ onMounted(async () => {
 .prev-button,
 .next-button {
   position: absolute;
-  background-color: #D9D9D9;
+  background-color: #d9d9d9;
   border: none;
   border-radius: 100%;
   cursor: pointer;
@@ -132,8 +139,8 @@ onMounted(async () => {
   }
 
   &:hover {
-    background-color: #BFBFBF;
-    transition: .3s;
+    background-color: #bfbfbf;
+    transition: 0.3s;
   }
 }
 
@@ -148,5 +155,19 @@ onMounted(async () => {
 .btns {
   display: flex;
   gap: 1vw;
+}
+
+.count {
+  position: absolute;
+  bottom: 2vw;
+  right: 50%;
+  display: flex;
+  gap: 0.3vw;
+  & span {
+    color: #fff;
+  }
+  & .active {
+  color: #ffdf00;
+}
 }
 </style>
