@@ -51,25 +51,33 @@ onMounted(async () => {
 <template>
   <section class="banner-section">
     <div :style="backgroundImage" class="banner-item">
+
       <div class="banner-content">
         <p><span class="mdi mdi-movie-open-outline"></span> AGORA NOS CINEMAS</p>
-        <img
-          v-if="movie?.logo_path"
-          :src="`https://image.tmdb.org/t/p/original${movie?.logo_path}`"
-          :alt="movie?.title"  />
-        <h1 v-else>{{ movie?.title}}</h1>
+        <img v-if="movie?.logo_path" :src="`https://image.tmdb.org/t/p/original${movie?.logo_path}`"
+          :alt="movie?.title" />
+        <h1 v-else>{{ movie?.title }}</h1>
         <p class="overview">{{ movie?.overview }}</p>
       </div>
-      <button
-        class="prev-button"
-        @click="prevMovie">
-        <span class="mdi mdi-chevron-left"></span>
-      </button>
-      <button
-        class="next-button"
-        @click="nextMovie">
-        <span class="mdi mdi-chevron-right"></span>
-      </button>
+
+      <div class="banner-nav">
+        <button class="prev-button" @click="prevMovie">
+          <span class="mdi mdi-chevron-left"></span>
+        </button>
+        <button class="next-button" @click="nextMovie">
+          <span class="mdi mdi-chevron-right"></span>
+        </button>
+      </div>
+
+      <div class="btns">
+        <button class="btn-primary">
+          Ver Detalhes
+        </button>
+        <button class="btn-secondary">
+          Assistir Mais Tarde
+        </button>
+      </div>
+
     </div>
   </section>
 </template>
@@ -89,16 +97,19 @@ onMounted(async () => {
     max-width: 35%;
     height: auto;
   }
-  & h1{
+
+  & h1 {
     color: #fff;
     font-size: 3rem;
   }
+
   & p {
     color: #fff;
     font-size: 1.2rem;
     margin: 1.5vw 0;
     font-weight: 500;
   }
+
   & .overview {
     max-width: 60%;
     margin-top: 2vw;
@@ -106,27 +117,36 @@ onMounted(async () => {
   }
 }
 
-.prev-button, .next-button {
+.prev-button,
+.next-button {
   position: absolute;
   background-color: #D9D9D9;
   border: none;
   border-radius: 100%;
   cursor: pointer;
   top: 50%;
+
   & span {
     font-size: 2rem;
     color: #444444;
   }
+
   &:hover {
     background-color: #BFBFBF;
     transition: .3s;
   }
 }
+
 .prev-button {
   left: 2vw;
 }
+
 .next-button {
   right: 2vw;
 }
 
+.btns {
+  display: flex;
+  gap: 1vw;
+}
 </style>

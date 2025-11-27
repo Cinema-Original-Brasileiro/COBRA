@@ -75,3 +75,33 @@ textarea:not([rows]) {
   scroll-margin-block: 5ex;
 }
 
+.btn-primary {
+  background-color: #009440;
+  border: none;
+  color: #fff;
+  padding: 0.75em 3em;
+  font-weight: 600;
+  border-radius: 0.5em;
+  cursor: pointer;
+  transition: .3s;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  &:hover {
+    background-color: #007a33;
+  }
+}
+
+.btn-secondary {
+  background-color: inherit;
+  border: 2px solid #FFDF00;
+  color: #FFDF00;
+  padding: 0.75em 2em;
+  font-weight: 600;
+  border-radius: 0.5em;
+  cursor: pointer;
+  transition: .3s;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  &:hover {
+    color: #a89201;
+    border-color: #a89201;
+  }
+}
