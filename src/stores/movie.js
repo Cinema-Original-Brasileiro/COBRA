@@ -49,6 +49,8 @@ export const useMoviesStore = defineStore('movies', () => {
           with_genres: genreStore.currentGenresId.join(','),
         },
       })
+
+
       state.movies = response.data.results;
     } catch (error) {
       console.error('Erro filme ', error)
@@ -130,7 +132,7 @@ export const useMoviesStore = defineStore('movies', () => {
           language: 'pt-BR',
       }}
     );
-    
+
     const resultado = response.data.cast;
 
     const filterCast = resultado.filter((individual) => individual.known_for_department === 'Acting' || individual.known_for_department === 'Directing');
