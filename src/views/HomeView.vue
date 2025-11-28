@@ -10,8 +10,13 @@ const latestReleases = computed(() => {
   return moviesStore.ultimosLancamentos.slice(0, 5)
 })
 
+const mostPopular = computed(() => {
+  return moviesStore.popularMovies.slice(0, 5)
+})
+
 onMounted(async () => {
   await moviesStore.ultimosLancamentosList()
+  await moviesStore.popularMoviesList()
 })
 </script>
 
@@ -43,12 +48,42 @@ onMounted(async () => {
         </div>
       </li>
     </ul>
+
   </section>
+
+  <section class="most-popular">
+    <div class="section-header">
+      <h2>Mais Populares</h2>
+      <RouterLink>Ver Mais <span class="mdi mdi-chevron-right"></span></RouterLink>
+    </div>
+    <ul class="movie-list">
+      <li v-for="m in mostPopular" :key="m.id" class="movie">
+        <img :src="`https://image.tmdb.org/t/p/w500${m.poster_path}`" :alt="m.title" />
+        <h3>{{ m.title }}</h3>
+        <div class="infos">
+          <p>{{ m.release_date.slice(0, 4) }}</p>
+          <p>{{  }}</p>
+        </div>
+        <div class="item-actions">
+          <p>
+            <span class="mdi mdi-star"></span>
+            {{ m.vote_average !== 10 ? m.vote_average.toFixed(1) : '10' }}
+          </p>
+          <ul class="actions-icon">
+            <li><span class="mdi mdi-heart-outline"></span></li>
+            <li><span class="mdi mdi-clock-outline"></span></li>
+          </ul>
+        </div>
+      </li>
+    </ul>
+
+  </section>
+
 </template>
 
 <style scoped>
 
-.latest-releases {
+section {
   display: flex;
   flex-direction: column;
 }
@@ -111,6 +146,7 @@ onMounted(async () => {
 .infos {
   & p {
     color: #b2b2b2;
+    margin: 0.8vw 0;
   }
 }
 
