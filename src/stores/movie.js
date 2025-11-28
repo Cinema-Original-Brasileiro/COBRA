@@ -22,6 +22,7 @@ export const useMoviesStore = defineStore('movies', () => {
   const ultimosLancamentos = computed(() => state.ultimosLancamentos);
   const currentMovie = computed(() => state.currentMovie);
   const castMovie = computed(() => state.castMovie);
+  const runTime = computed(() => state.runTime);
 
   const moviePageUp = () => {
     state.page = state.page + 1;
@@ -46,10 +47,48 @@ export const useMoviesStore = defineStore('movies', () => {
           with_origin_country: 'BR',
           language: 'pt-BR',
           page: state.page,
+          include_adult: 'false',
           with_genres: genreStore.currentGenresId.join(','),
         },
-      })
-      state.movies = response.data.results;
+      });
+
+      const resultado = response.data.results;
+
+      for (const movie of resultado) {
+        try {
+          const responseMovie = await api.get(`movie/${movie.id}`);
+          movie.runtime = responseMovie.data.runtime;
+        } catch (error) {
+          console.error('Erro tempo de duração filme', error);
+        }
+
+        // Certifications (Classficação Indicativa)
+                
+        try {
+          const responseMovie = await api.get(`movie/${movie.id}/release_dates`);
+          const resultado = responseMovie.data.results;
+          const verificacaoBrasil = resultado.find(pais => pais.iso_3166_1 === "BR");
+          if (verificacaoBrasil == undefined || verificacaoBrasil == null){
+            movie.classificacaoIndicativa = 'L';
+            break;
+          }
+
+          const classificacaoValida = verificacaoBrasil.release_dates.find(classificacao => classificacao.certification != '');
+          
+          if (classificacaoValida?.certification == undefined) {
+            movie.classificacaoIndicativa = 'L';
+          }
+          else {
+            movie.classificacaoIndicativa = classificacaoValida?.certification;
+          }
+          
+        } catch (error) {
+          console.error("Erro classificação indicativa:", error);
+        }
+      }
+
+
+      state.movies = resultado;
     } catch (error) {
       console.error('Erro filme ', error)
     }
@@ -133,8 +172,7 @@ export const useMoviesStore = defineStore('movies', () => {
     
     const resultado = response.data.cast;
 
-    const filterCast = resultado.filter((individual) => individual.known_for_department === 'Acting' || individual.known_for_department === 'Directing');
-
+    const filterCast = resultado.filter((individual) => individual.known_for_department === 'Acting' || individual.known_for_department === 'Directing');    
     state.castMovie = filterCast;
 
     } catch(error) {
