@@ -132,9 +132,9 @@ onMounted(async () => {
   border-radius: 100%;
   cursor: pointer;
   top: 50%;
-
+  padding: 0.2vw 0.8vw;
   & span {
-    font-size: 2rem;
+    font-size: 1.7rem;
     color: #444444;
   }
 

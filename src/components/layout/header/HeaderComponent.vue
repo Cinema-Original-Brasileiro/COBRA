@@ -78,6 +78,7 @@ const alternarDrop = () => {
 header {
   padding: 0.8vw 10vw;
   background-color: #FFF5EE;
+  color: #080808;
   position: sticky;
   top: 0;
   z-index: 1000;
