@@ -319,7 +319,6 @@ const selecionadoFiltro = computed(() => {
   object-fit: cover;
   margin: 0.5vw 1vw 0.5vw 1vw;
   justify-content: center;
-  opacity: 0.03;
   align-content: center;
   border-radius: 10px;
 }
