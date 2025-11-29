@@ -14,6 +14,10 @@ export const useGenreStore = defineStore('genre', () => {
     function selectGenres(id) {
         setCurrentGenresId(id);
         moviesStore.moviesList();
+        moviesStore.popularMoviesList();
+        moviesStore.ultimosLancamentosList();
+        moviesStore.moviesTopFiveList();
+        moviesStore.page = 1;
     }
 
     const genres = computed(() => state.genres);
