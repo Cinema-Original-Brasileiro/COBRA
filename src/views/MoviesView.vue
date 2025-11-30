@@ -306,6 +306,8 @@ const selecionadoFiltro = computed(() => {
   box-shadow: 0.104vw 0.104vw 0.260416vw rgba(0, 0, 0, 0.1);
 }
 
+
+
 .movies-card div {
   display: flex;
   align-items: center;
