@@ -27,7 +27,7 @@ onMounted(async () => {
   <ul class="atores">
     <li v-for="actor in actorStore.actors" :key="actor.id" class="ator">
       <div>
-        <img :src="`https://image.tmdb.org/t/p/w500/yJjV1ZCQbCSSgRy05FncCKjyaY4.jpg}`" alt="" class="actor-image">
+        <img :src="`https://image.tmdb.org/t/p/w500/${actor.profile_path}}`" alt="" class="actor-image">
       </div>
       <div class="informacoes">
         <h2>{{ actor.name }}</h2>
