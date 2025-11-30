@@ -1,8 +1,10 @@
 <script setup>
 import { onMounted, ref, computed } from 'vue'
 import { useCartazStore } from '@/stores/cartaz'
+import { useMoviesStore } from '@/stores/movie';
 
-const cartazStore = useCartazStore()
+const cartazStore = useCartazStore();
+const moviesStore = useMoviesStore();
 
 // Pega apenas o 5 primeiros filmes e remove repetidos
 const firstMovies = computed(() => {
@@ -44,7 +46,7 @@ onMounted(async () => {
     page++
   }
 
-  await cartazStore.addLogoToMovie(cartazStore.cartazMoviesBr)
+  await moviesStore.addLogoToMovie(cartazStore.cartazMoviesBr)
 })
 </script>
 

@@ -2,6 +2,7 @@
 import { onMounted, computed } from 'vue'
 import { RouterLink } from 'vue-router'
 import BannerSection from '@/components/sections/home/BannerSection.vue'
+import TopFiveMovies from '@/components/sections/home/TopFiveMovies.vue'
 import { useMoviesStore } from '@/stores/movie'
 
 const moviesStore = useMoviesStore()
@@ -48,7 +49,6 @@ onMounted(async () => {
         </div>
       </li>
     </ul>
-
   </section>
 
   <section class="most-popular">
@@ -76,14 +76,15 @@ onMounted(async () => {
         </div>
       </li>
     </ul>
-
   </section>
+
+  <TopFiveMovies />
 
 </template>
 
 <style scoped>
 
-section {
+.latest-releases, .most-popular {
   display: flex;
   flex-direction: column;
 }
