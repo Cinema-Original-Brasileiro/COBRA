@@ -3,7 +3,6 @@ import { reactive, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { useGenreStore } from './genre';
 
-
 export const useMoviesStore = defineStore('movies', () => {
   const genreStore = useGenreStore();
   const state = reactive({
@@ -14,6 +13,7 @@ export const useMoviesStore = defineStore('movies', () => {
     currentMovie: {},
     castMovie: [],
     page: 1,
+    logos: {}
   });
 
   const movies = computed(() => state.movies)
@@ -69,7 +69,7 @@ export const useMoviesStore = defineStore('movies', () => {
         },
       });
 
-      state.topFive = (response.data.results).slice(0,5);
+      state.topFive = response.data.results;
     } catch (error) {
       console.error('Erro top 5 filmes ', error)
     };
@@ -117,7 +117,7 @@ export const useMoviesStore = defineStore('movies', () => {
 
   const movieDetail = async (movieId) => {
     try {
-      const response = await api.get(`movie/${movieId}`);
+    const response = await api.get(`movie/${movieId}`, { params: { language: 'pt-BR' }});
       state.currentMovie = response.data;
     } catch (error) {
       console.error('Erro detalhes de filme: ', error);
@@ -145,5 +145,29 @@ export const useMoviesStore = defineStore('movies', () => {
     }
   };
 
-  return { movies, topFive, popularMovies, ultimosLancamentos, currentMovie, castMovie, moviesList, moviePageUp, moviePageDown, moviesTopFiveList, popularMoviesList, ultimosLancamentosList, movieDetail, castMovieList };
+
+  const logosList = async (movieId) => {
+    try {
+      const response = await api.get(`movie/${movieId}/images` , {
+        params: {
+          include_image_language: 'pt-BR, null',
+        }
+      });
+
+      const logo = response.data.logos?.[0]
+      state.logos[movieId] = logo;
+      return logo;
+    } catch (error) {
+      console.error('Erro ao buscar logos', error);
+    }
+  }
+
+  const addLogoToMovie = async (movies) => {
+    for (const m of movies) {
+      const logo = await logosList(m.id);
+      m.logo_path = logo?.file_path || null;
+    }
+  }
+
+  return { movies, topFive, popularMovies, ultimosLancamentos, currentMovie, castMovie, moviesList, moviePageUp, moviePageDown, moviesTopFiveList, popularMoviesList, ultimosLancamentosList, movieDetail, castMovieList, logosList, addLogoToMovie };
 });
