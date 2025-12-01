@@ -10,19 +10,20 @@ export const useGenreStore = defineStore('genre', () => {
     });
 
     const moviesStore = useMoviesStore();
-
+    
     function selectGenres(id) {
         setCurrentGenresId(id);
         moviesStore.moviesList();
+        moviesStore.popularMoviesList();
+        moviesStore.ultimosLancamentosList();
+        moviesStore.moviesTopFiveList();
+        moviesStore.page = 1;
     }
 
     const genres = computed(() => state.genres);
     const currentGenresId = computed(() => state.currentGenresId);
 
-    const getGenreName = (id) => {
-      const genre = state.genres.find((genre) => genre.id === id)
-      return genre ? genre.name : null
-    }
+    const getGenreName = (id) => state.genres.find((genre) => genre.id === id).name;
 
     const getAllGenres = async (type) => {
         const response = await api.get(`genre/${type}/list?language=pt-BR`);
