@@ -3,7 +3,6 @@ import { reactive, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { useGenreStore } from './genre';
 
-
 export const useMoviesStore = defineStore('movies', () => {
   const genreStore = useGenreStore();
   const state = reactive({
@@ -15,6 +14,7 @@ export const useMoviesStore = defineStore('movies', () => {
     castMovie: [],
     quantidadeFilmes: [],
     page: 1,
+    logos: {}
   });
 
   const movies = computed(() => state.movies)
@@ -54,6 +54,10 @@ export const useMoviesStore = defineStore('movies', () => {
           include_adult: 'false',
           with_genres: genreStore.currentGenresId.join(','),
         },
+      })
+
+
+      state.movies = response.data.results;
       });
       
       const resultado = response.data.results;
@@ -112,6 +116,7 @@ export const useMoviesStore = defineStore('movies', () => {
       });
       
       const resultado = response.data.results;
+      state.topFive = response.data.results;
 
       const filtragem = state.quantidadeFilmes.find(verificar => verificar === response.data.total_results);
       if (filtragem === undefined) {
@@ -280,7 +285,7 @@ export const useMoviesStore = defineStore('movies', () => {
   
   const movieDetail = async (movieId) => {
     try {
-      const response = await api.get(`movie/${movieId}`);
+    const response = await api.get(`movie/${movieId}`, { params: { language: 'pt-BR' }});
       state.currentMovie = response.data;
     } catch (error) {
       console.error('Erro detalhes de filme: ', error);
@@ -293,12 +298,20 @@ export const useMoviesStore = defineStore('movies', () => {
       const response = await api.get(`movie/${movieId}/credits`, {
         params: {
           language: 'pt-BR',
+      }}
+    );
+
+    const resultado = response.data.cast;
+
+    const filterCast = resultado.filter((individual) => individual.known_for_department === 'Acting' || individual.known_for_department === 'Directing');
+
         }}
       );
       
       const resultado = response.data.cast;
       
       const filterCast = resultado.filter((individual) => individual.known_for_department === 'Acting' || individual.known_for_department === 'Directing');    
+
     state.castMovie = filterCast;
     
   } catch(error) {
@@ -306,7 +319,31 @@ export const useMoviesStore = defineStore('movies', () => {
       throw error;
     }
   };
+  const logosList = async (movieId) => {
+    try {
+      const response = await api.get(`movie/${movieId}/images` , {
+        params: {
+          include_image_language: 'pt-BR, null',
+        }
+      });
 
+      const logo = response.data.logos?.[0]
+      state.logos[movieId] = logo;
+      return logo;
+    } catch (error) {
+      console.error('Erro ao buscar logos', error);
+    }
+  }
+
+  const addLogoToMovie = async (movies) => {
+    for (const m of movies) {
+      const logo = await logosList(m.id);
+      m.logo_path = logo?.file_path || null;
+    }
+  }
+
+  return { movies, topFive, popularMovies, ultimosLancamentos, currentMovie, castMovie, moviesList, moviePageUp, moviePageDown, moviesTopFiveList, popularMoviesList, ultimosLancamentosList, movieDetail, castMovieList, logosList, addLogoToMovie };
+});
   state.quantidadeFilmes.sort((a,b) => a - b);
 
   return { movies, topFive, popularMovies, ultimosLancamentos, currentMovie, castMovie, quantidadeFilmes, moviesList, moviePageUp, moviePageDown, moviesTopFiveList, popularMoviesList, ultimosLancamentosList, movieDetail, castMovieList };
