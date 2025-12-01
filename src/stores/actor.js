@@ -27,7 +27,7 @@ for (let divisao = 0; divisao < idActors.length; divisao += itensPorPagina) {
 export const useActorsStore = defineStore('actor', () => {
   const state = reactive({
     actors: [],
-    currentActor: [],
+    currentActor: {},
     moviesActor: [],
     instagramId: {},
     pages: 0,
@@ -105,13 +105,15 @@ export const useActorsStore = defineStore('actor', () => {
     moviesActorList(actorId)
   }
 
-  const moviesActorList = async (actorId) => {
+  const moviesActorList = async (actorId, ano_lancamentos, escolha, votos) => {
     try {
       const response = await api.get(`discover/movie`, {
         params: {
           page: state.pagesMovie,
           language: 'pt-BR',
-          sort_by: 'popularity.desc',
+          primary_release_year: ano_lancamentos,
+          sort_by: escolha,
+          'vote_count.gte': votos,
           with_origin_country: 'BR',
           with_people: actorId,
         },
@@ -119,15 +121,6 @@ export const useActorsStore = defineStore('actor', () => {
       state.moviesActor = response.data.results
     } catch (error) {
       console.error('Erro detalhes filmes de atores ', error)
-    }
-  }
-
-  const actorSocialMedia = async (actorId) => {
-    try {
-      const response = await api.get(`person/${actorId}/external_ids`)
-      return response.data.instagram_id
-    } catch (error) {
-      console.error('Erro redes sociais ', error)
     }
   }
 
@@ -140,7 +133,6 @@ export const useActorsStore = defineStore('actor', () => {
     actorsList,
     actorDetails,
     moviesActorList,
-    actorSocialMedia,
     actorsPageUp,
     actorsPageDown,
     moviesActorPageUp,
