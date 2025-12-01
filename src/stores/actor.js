@@ -13,9 +13,9 @@ const idActors = [
   55336, 55337, 55835, 55837, 57379, 59317, 62871, 63039, 64240, 64772, 66609,
 ]
 
-// Paginaçãow
+// Paginação
 
-const itensPorPagina = 20
+const itensPorPagina = 9
 const paginas = []
 
 for (let divisao = 0; divisao < idActors.length; divisao += itensPorPagina) {
@@ -28,6 +28,7 @@ export const useActorsStore = defineStore('actor', () => {
     actors: [],
     currentActor: [],
     moviesActor: [],
+    instagramId: {},
     pages: 0,
     pagesMovie: 1,
   })
@@ -37,13 +38,30 @@ export const useActorsStore = defineStore('actor', () => {
   const currentActor = computed(() => state.currentActor)
   const moviesActor = computed(() => state.moviesActor)
   const pagesMovie = computed(() => state.pagesMovie)
-
-  const actorsList = async () => {
-    try {
-      for (const idActor of paginas[state.pages]) {
-        const response = await api.get(`person/${idActor}`, { params: { language:  'pt-BR'}})
+  const instagramId = computed(() => state.instagramId)
+  
+  const response = await api.get(`person/${idActor}`, { params: { language:  'pt-BR'}})
         if (response.data.known_for_department === 'Acting') {
           state.actors.push(response.data)
+        const response = await api.get(`person/${idActor}`)
+        const resultado = response.data
+
+        if (resultado.known_for_department === 'Acting') {
+          try {
+            const responseActor = await api.get(`person/${idActor}/external_ids`);
+            resultado.instagramId = responseActor.data.instagram_id;
+          } catch (error) {
+            console.error('Erro redes sociais ', error)
+          }
+
+          try {
+            await moviesActorList(idActor);
+            resultado.movies = state.moviesActor;
+          } catch (error) {
+            console.error('Erro detalhes filmes de atores ', error)
+          }
+
+          state.actors.push(resultado);
         }
       }
     } catch (error) {
@@ -102,6 +120,19 @@ export const useActorsStore = defineStore('actor', () => {
     }
   }
 
+      console.error('Erro detalhes filmes de atores ', error)
+    }
+  }
+
+  const actorSocialMedia = async (actorId) => {
+    try {
+      const response = await api.get(`person/${actorId}/external_ids`)
+      return response.data.instagram_id
+    } catch (error) {
+      console.error('Erro redes sociais ', error)
+    }
+  }
+
   return {
     actors,
     pages,
@@ -110,6 +141,11 @@ export const useActorsStore = defineStore('actor', () => {
     actorsList,
     actorDetails,
     moviesActorList,
+    instagramId,
+    actorsList,
+    actorDetails,
+    moviesActorList,
+    actorSocialMedia,
     actorsPageUp,
     actorsPageDown,
     moviesActorPageUp,

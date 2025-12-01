@@ -12,6 +12,7 @@ export const useMoviesStore = defineStore('movies', () => {
     ultimosLancamentos: [],
     currentMovie: {},
     castMovie: [],
+    quantidadeFilmes: [],
     page: 1,
     logos: {}
   });
@@ -22,20 +23,24 @@ export const useMoviesStore = defineStore('movies', () => {
   const ultimosLancamentos = computed(() => state.ultimosLancamentos);
   const currentMovie = computed(() => state.currentMovie);
   const castMovie = computed(() => state.castMovie);
+  const quantidadeFilmes = computed(() => state.quantidadeFilmes);
+  const runTime = computed(() => state.runTime);
 
   const moviePageUp = () => {
     state.page = state.page + 1;
     moviesList();
     popularMoviesList();
     ultimosLancamentosList();
+    moviesTopFiveList();
   };
-
+  
   const moviePageDown = () => {
     if (state.page > 1) {
       state.page = state.page - 1;
       moviesList();
       popularMoviesList();
       ultimosLancamentosList();
+      moviesTopFiveList();
     }
   };
 
@@ -46,17 +51,57 @@ export const useMoviesStore = defineStore('movies', () => {
           with_origin_country: 'BR',
           language: 'pt-BR',
           page: state.page,
+          include_adult: 'false',
           with_genres: genreStore.currentGenresId.join(','),
         },
       })
 
 
       state.movies = response.data.results;
+      });
+      
+      const resultado = response.data.results;
+
+      for (const movie of resultado) {
+        try {
+          const responseMovie = await api.get(`movie/${movie.id}`);
+          movie.runtime = responseMovie.data.runtime;
+        } catch (error) {
+          console.error('Erro tempo de duração filme', error);
+        }
+        
+        // Certifications (Classficação Indicativa)
+        
+        try {
+          const responseMovie = await api.get(`movie/${movie.id}/release_dates`);
+          const resultado = responseMovie.data.results;
+          const verificacaoBrasil = resultado.find(pais => pais.iso_3166_1 === "BR");
+          if (verificacaoBrasil == undefined || verificacaoBrasil == null){
+            movie.classificacaoIndicativa = 'L';
+            break;
+          }
+          
+          const classificacaoValida = verificacaoBrasil.release_dates.find(classificacao => classificacao.certification != '');
+          
+          if (classificacaoValida?.certification == undefined) {
+            movie.classificacaoIndicativa = 'L';
+          }
+          else {
+            movie.classificacaoIndicativa = classificacaoValida?.certification;
+          }
+          
+        } catch (error) {
+          console.error("Erro classificação indicativa:", error);
+        }
+      }
+      
+      state.movies = resultado;
+      
     } catch (error) {
       console.error('Erro filme ', error)
     }
   }
-
+  
   const moviesTopFiveList = async () => {
     try {
       const response = await api.get('discover/movie', {
@@ -66,15 +111,57 @@ export const useMoviesStore = defineStore('movies', () => {
           'vote_count.gte': 500,
           with_origin_country: 'BR',
           with_original_language: 'pt',
+          with_genres: genreStore.currentGenresId.join(','),
         },
       });
-
+      
+      const resultado = response.data.results;
       state.topFive = response.data.results;
+
+      const filtragem = state.quantidadeFilmes.find(verificar => verificar === response.data.total_results);
+      if (filtragem === undefined) {
+        state.quantidadeFilmes.push(response.data.total_results);
+      }
+      
+      for (const movie of resultado) {
+        try {
+          const responseMovie = await api.get(`movie/${movie.id}`);
+          movie.runtime = responseMovie.data.runtime;
+        } catch (error) {
+          console.error('Erro tempo de duração filme', error);
+        }
+        
+        // Certifications (Classficação Indicativa)
+        
+        try {
+          const responseMovie = await api.get(`movie/${movie.id}/release_dates`);
+          const resultado = responseMovie.data.results;
+          const verificacaoBrasil = resultado.find(pais => pais.iso_3166_1 === "BR");
+          if (verificacaoBrasil == undefined || verificacaoBrasil == null){
+            movie.classificacaoIndicativa = 'L';
+            break;
+          }
+          
+          const classificacaoValida = verificacaoBrasil.release_dates.find(classificacao => classificacao.certification != '');
+          
+          if (classificacaoValida?.certification == undefined) {
+            movie.classificacaoIndicativa = 'L';
+          }
+          else {
+            movie.classificacaoIndicativa = classificacaoValida?.certification;
+          }
+          
+        } catch (error) {
+          console.error("Erro classificação indicativa:", error);
+        }
+      }
+      
+      state.topFive = resultado;
     } catch (error) {
       console.error('Erro top 5 filmes ', error)
     };
   };
-
+  
   const popularMoviesList = async () => {
     try {
       const response = await api.get('discover/movie', {
@@ -85,16 +172,56 @@ export const useMoviesStore = defineStore('movies', () => {
           'vote_count.gte': 50,
           with_origin_country: 'BR',
           with_original_language: 'pt',
+          with_genres: genreStore.currentGenresId.join(','),
         },
       });
+      
+      const resultado = response.data.results;
+      const filtragem = state.quantidadeFilmes.find(verificar => verificar == response.data.total_results);
+      if (filtragem === undefined) {
+        state.quantidadeFilmes.push(response.data.total_results);
+      }
 
-      state.popularMovies = response.data.results;
+
+      for (const movie of resultado) {
+        try {
+          const responseMovie = await api.get(`movie/${movie.id}`);
+          movie.runtime = responseMovie.data.runtime;
+        } catch (error) {
+          console.error('Erro tempo de duração filme', error);
+        }
+        
+        // Certifications (Classficação Indicativa)
+        
+        try {
+          const responseMovie = await api.get(`movie/${movie.id}/release_dates`);
+          const resultado = responseMovie.data.results;
+          const verificacaoBrasil = resultado.find(pais => pais.iso_3166_1 === "BR");
+          if (verificacaoBrasil == undefined || verificacaoBrasil == null){
+            movie.classificacaoIndicativa = 'L';
+            break;
+          }
+          
+          const classificacaoValida = verificacaoBrasil.release_dates.find(classificacao => classificacao.certification != '');
+          
+          if (classificacaoValida?.certification == undefined) {
+            movie.classificacaoIndicativa = 'L';
+          }
+          else {
+            movie.classificacaoIndicativa = classificacaoValida?.certification;
+          }
+          
+        } catch (error) {
+          console.error("Erro classificação indicativa:", error);
+        }
+      }
+      state.popularMovies = resultado;
 
     } catch (error) {
       console.error('Erro filmes populares', error);
     };
   };
-
+  
   const ultimosLancamentosList = async () => {
     try {
       const response = await api.get('discover/movie', {
@@ -106,15 +233,56 @@ export const useMoviesStore = defineStore('movies', () => {
           'vote_count.gte': 2,
           with_origin_country: 'BR',
           with_original_language: 'pt',
+          with_genres: genreStore.currentGenresId.join(','),
         },
       });
-
-      state.ultimosLancamentos = response.data.results;
+      
+      const resultado = response.data.results;
+      const filtragem = state.quantidadeFilmes.find((verificar) => verificar == response.data.total_results);
+      if (filtragem === undefined) {
+        state.quantidadeFilmes.push(response.data.total_results);
+      }
+      
+      for (const movie of resultado) {
+        try {
+          const responseMovie = await api.get(`movie/${movie.id}`);
+          movie.runtime = responseMovie.data.runtime;
+        } catch (error) {
+          console.error('Erro tempo de duração filme', error);
+        }
+        
+        // Certifications (Classficação Indicativa)
+        
+        try {
+          const responseMovie = await api.get(`movie/${movie.id}/release_dates`);
+          const resultado = responseMovie.data.results;
+          const verificacaoBrasil = resultado.find(pais => pais.iso_3166_1 === "BR");
+          if (verificacaoBrasil == undefined || verificacaoBrasil == null){
+            movie.classificacaoIndicativa = 'L';
+            break;
+          }
+          
+          const classificacaoValida = verificacaoBrasil.release_dates.find(classificacao => classificacao.certification != '');
+          
+          if (classificacaoValida?.certification == undefined) {
+            movie.classificacaoIndicativa = 'L';
+          }
+          else {
+            movie.classificacaoIndicativa = classificacaoValida?.certification;
+          }
+          
+        } catch (error) {
+          console.error("Erro classificação indicativa:", error);
+        }
+      }
+      
+      state.ultimosLancamentos = resultado;
+      
     } catch (error) {
       console.error('Erro ultimos lançamentos ', error)
     };
   };
-
+  
   const movieDetail = async (movieId) => {
     try {
     const response = await api.get(`movie/${movieId}`, { params: { language: 'pt-BR' }});
@@ -137,15 +305,20 @@ export const useMoviesStore = defineStore('movies', () => {
 
     const filterCast = resultado.filter((individual) => individual.known_for_department === 'Acting' || individual.known_for_department === 'Directing');
 
-    state.castMovie = filterCast;
+        }}
+      );
+      
+      const resultado = response.data.cast;
+      
+      const filterCast = resultado.filter((individual) => individual.known_for_department === 'Acting' || individual.known_for_department === 'Directing');    
 
-    } catch(error) {
+    state.castMovie = filterCast;
+    
+  } catch(error) {
       console.error('Erro elenco do filme ', error);
       throw error;
     }
   };
-
-
   const logosList = async (movieId) => {
     try {
       const response = await api.get(`movie/${movieId}/images` , {
@@ -170,4 +343,8 @@ export const useMoviesStore = defineStore('movies', () => {
   }
 
   return { movies, topFive, popularMovies, ultimosLancamentos, currentMovie, castMovie, moviesList, moviePageUp, moviePageDown, moviesTopFiveList, popularMoviesList, ultimosLancamentosList, movieDetail, castMovieList, logosList, addLogoToMovie };
+});
+  state.quantidadeFilmes.sort((a,b) => a - b);
+
+  return { movies, topFive, popularMovies, ultimosLancamentos, currentMovie, castMovie, quantidadeFilmes, moviesList, moviePageUp, moviePageDown, moviesTopFiveList, popularMoviesList, ultimosLancamentosList, movieDetail, castMovieList };
 });
