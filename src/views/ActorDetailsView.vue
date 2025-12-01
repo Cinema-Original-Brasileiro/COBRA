@@ -224,7 +224,7 @@ function cortarTexto(biografia) {
     padding: 1vw 2vw 1vw 2vw;
     cursor: pointer;
     border-radius: 1vw;
-    background: rgba(255, 245, 238, 0.5);
+    background: rgba(255, 245, 238, 0.9);
     box-shadow: 0 0 1vw rgba(0, 0, 0, 0.04);
     backdrop-filter: blur(1px);
 }
@@ -263,7 +263,6 @@ hr {
     object-fit: cover;
     margin: 0.5vw 1.5vw 2rem 1vw;
     border-radius: 10px;
-    opacity: 0.03;
     transition: 1.2s;
     box-shadow: 0 0 0.1vw rgba(0, 0, 0, 0.1);
     &:hover {
