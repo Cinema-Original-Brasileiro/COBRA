@@ -76,9 +76,9 @@ const alternarDrop = () => {
 /*==== ESTILIZAÇÃO GERAL DO HEADER ====*/
 
 header {
-  padding: 0.8vw 10vw;
-  background-color: #FFF5EE;
-  color: #080808;
+  padding: 1vw 10vw;
+  background: rgba(255, 245, 238, 0.5);
+  backdrop-filter: blur(5px);
   position: sticky;
   top: 0;
   z-index: 1000;

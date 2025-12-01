@@ -6,7 +6,7 @@ export const useCartazStore = defineStore('cartaz', () => {
   const state = reactive({
     cartazMovies: [],
   });
-
+  
   const cartazMovies = computed(() => state.cartazMovies);
   const cartazMoviesBr = computed(() => state.cartazMovies.filter((m) => m.original_language == 'pt'));
 
