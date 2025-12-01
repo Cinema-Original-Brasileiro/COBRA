@@ -279,6 +279,9 @@ export const useMoviesStore = defineStore('movies', () => {
   };
   
   const movieDetail = async (movieId) => {
+    if(!movieId) {
+      return
+    }
     try {
       const response = await api.get(`movie/${movieId}`);
       state.currentMovie = response.data;
@@ -309,5 +312,32 @@ export const useMoviesStore = defineStore('movies', () => {
 
   state.quantidadeFilmes.sort((a,b) => a - b);
 
-  return { movies, topFive, popularMovies, ultimosLancamentos, currentMovie, castMovie, quantidadeFilmes, moviesList, moviePageUp, moviePageDown, moviesTopFiveList, popularMoviesList, ultimosLancamentosList, movieDetail, castMovieList };
+  const logosList = async (movieId) => {
+    try {
+      const response = await api.get(`movie/${movieId}/images` , {
+        params: {
+          include_image_language: 'pt-BR, null',
+        }
+      });
+
+      const logo = response.data.logos?.[0]
+
+      if(state.currentMovie.id === Number(movieId)) {
+        state.currentMovie.logo_path = logo?.file_path || null;
+      }
+
+      return logo;
+    } catch (error) {
+      console.error('Erro ao buscar logos', error);
+    }
+  }
+
+  const addLogoToMovie = async (movies) => {
+    for (const m of movies) {
+      const logo = await logosList(m.id);
+      m.logo_path = logo?.file_path || null;
+    }
+  }
+
+  return { movies, topFive, popularMovies, ultimosLancamentos, currentMovie, castMovie, quantidadeFilmes, moviesList, moviePageUp, moviePageDown, moviesTopFiveList, popularMoviesList, ultimosLancamentosList, movieDetail, castMovieList, logosList, addLogoToMovie };
 });
