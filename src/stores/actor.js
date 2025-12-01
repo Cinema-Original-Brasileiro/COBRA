@@ -89,7 +89,11 @@ export const useActorsStore = defineStore('actor', () => {
 
   const actorDetails = async (actorId) => {
     try {
-      const response = await api.get(`person/${actorId}`)
+      const response = await api.get(`person/${actorId}`, {
+        params: {
+          language: 'pt-BR',
+        }
+      })
       state.currentActor = response.data
     } catch (error) {
       console.error('Erro detalhes ator(a) ', error)
