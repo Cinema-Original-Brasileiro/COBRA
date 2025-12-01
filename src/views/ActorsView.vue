@@ -1,14 +1,21 @@
 <script setup>
 
 import { useActorsStore } from '@/stores/actor';
-import { onMounted, computed, ref } from 'vue';
+import { onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 
 const actorStore = useActorsStore();
+const router = useRouter();
 
 onMounted(async () => {
   await actorStore.actorsList();
   await actorStore.moviesActorList();
 });
+
+
+function openActor(actorId) {
+    router.push({ name: 'ActorDetails', params: {actorId} });
+}
 
 </script>
 
@@ -27,7 +34,7 @@ onMounted(async () => {
   <ul class="atores">
     <li v-for="actor in actorStore.actors" :key="actor.id" class="ator">
       <div>
-        <img :src="`https://image.tmdb.org/t/p/w500/${actor.profile_path}}`" alt="" class="actor-image">
+        <img :src="`https://image.tmdb.org/t/p/w500/yJjV1ZCQbCSSgRy05FncCKjyaY4.jpg`"  @click="openActor(actor.id)"  alt="" class="actor-image">
       </div>
       <div class="informacoes">
         <h2>{{ actor.name }}</h2>
@@ -99,10 +106,9 @@ onMounted(async () => {
   &:hover {
     width: 8.5rem;
     height: 12.5rem;
-    scale: 1.03;
-    transition: 0.5s;
+    scale: 1.25;
+    transition: 0.9s;
     box-shadow: 0 0 2vw rgba(0, 0, 0, 0.3);
-
   }
 }
 
