@@ -3,6 +3,7 @@ import { onMounted, computed } from 'vue'
 import { RouterLink } from 'vue-router'
 import BannerSection from '@/components/sections/home/BannerSection.vue'
 import TopFiveMovies from '@/components/sections/home/TopFiveMovies.vue'
+import MainActors from '@/components/sections/home/MainActors.vue'
 import { useMoviesStore } from '@/stores/movie'
 
 const moviesStore = useMoviesStore()
@@ -79,7 +80,7 @@ onMounted(async () => {
   </section>
 
   <TopFiveMovies />
-
+  <MainActors />
 </template>
 
 <style scoped>
