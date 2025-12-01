@@ -5,6 +5,7 @@ import BannerSection from '@/components/sections/home/BannerSection.vue'
 import TopFiveMovies from '@/components/sections/home/TopFiveMovies.vue'
 import MainActors from '@/components/sections/home/MainActors.vue'
 import { useMoviesStore } from '@/stores/movie'
+import router from '@/router'
 
 const moviesStore = useMoviesStore()
 
@@ -15,6 +16,10 @@ const latestReleases = computed(() => {
 const mostPopular = computed(() => {
   return moviesStore.popularMovies.slice(0, 5)
 })
+
+function openMovie(id) {
+  router.push({name: 'movie', params: {id}});
+};
 
 onMounted(async () => {
   await moviesStore.ultimosLancamentosList()
@@ -32,8 +37,12 @@ onMounted(async () => {
     </div>
     <ul class="movie-list">
       <li v-for="m in latestReleases" :key="m.id" class="movie">
-        <img :src="`https://image.tmdb.org/t/p/w500${m.poster_path}`" :alt="m.title" />
-        <h3>{{ m.title }}</h3>
+        <img
+          :src="`https://image.tmdb.org/t/p/w500${m.poster_path}`"
+          :alt="m.title"
+          @click="openMovie(m.id)"
+          />
+        <h3 @click="openMovie(m.id)">{{ m.title }}</h3>
         <div class="infos">
           <p>{{ m.release_date.slice(0, 4) }}</p>
           <p>{{  }}</p>
@@ -59,8 +68,11 @@ onMounted(async () => {
     </div>
     <ul class="movie-list">
       <li v-for="m in mostPopular" :key="m.id" class="movie">
-        <img :src="`https://image.tmdb.org/t/p/w500${m.poster_path}`" :alt="m.title" />
-        <h3>{{ m.title }}</h3>
+        <img
+          :src="`https://image.tmdb.org/t/p/w500${m.poster_path}`"
+          :alt="m.title"
+          @click="openMovie(m.id)">
+        <h3 @click="openMovie(m.id)">{{ m.title }}</h3>
         <div class="infos">
           <p>{{ m.release_date.slice(0, 4) }}</p>
           <p>{{  }}</p>

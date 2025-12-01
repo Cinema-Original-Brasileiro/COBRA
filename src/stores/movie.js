@@ -116,6 +116,9 @@ export const useMoviesStore = defineStore('movies', () => {
   };
 
   const movieDetail = async (movieId) => {
+    if(!movieId) {
+      return
+    }
     try {
     const response = await api.get(`movie/${movieId}`, { params: { language: 'pt-BR' }});
       state.currentMovie = response.data;
@@ -155,7 +158,11 @@ export const useMoviesStore = defineStore('movies', () => {
       });
 
       const logo = response.data.logos?.[0]
-      state.logos[movieId] = logo;
+
+      if(state.currentMovie.id === Number(movieId)) {
+        state.currentMovie.logo_path = logo?.file_path || null;
+      }
+
       return logo;
     } catch (error) {
       console.error('Erro ao buscar logos', error);
