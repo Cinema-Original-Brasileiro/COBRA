@@ -21,7 +21,6 @@
     top: 1rem;
     z-index: 1000;
     font-size: 0.85rem;
-    background-color: #FFF5EE;
 
     & li {
       padding: 0.6rem 0;
