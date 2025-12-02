@@ -38,7 +38,6 @@ export const useActorsStore = defineStore('actor', () => {
   const pages = computed(() => state.pages)
   const currentActor = computed(() => state.currentActor)
   const moviesActor = computed(() => state.moviesActor)
-  const pagesMovie = computed(() => state.pagesMovie)
   const instagramId = computed(() => state.instagramId)
 
   const actorsList = async () => {
