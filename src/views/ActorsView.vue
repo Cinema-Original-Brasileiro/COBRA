@@ -7,9 +7,9 @@ const actorStore = useActorsStore()
 const router = useRouter()
 
 onMounted(async () => {
-  await actorStore.actorsList()
-  await actorStore.moviesActorList()
-})
+  await actorStore.actorsList();
+  await actorStore.moviesActorList();
+});
 
 function openActor(actorId) {
   router.push({ name: 'ActorDetails', params: { actorId } })
