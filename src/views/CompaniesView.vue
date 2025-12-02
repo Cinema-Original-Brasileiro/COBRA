@@ -2,8 +2,10 @@
 
 import { useCompaniesStore } from '@/stores/company';
 import { onMounted } from 'vue';
- 
+import { useRouter } from 'vue-router'; 
+
 const companyStore = useCompaniesStore();
+const router = useRouter();
 
 onMounted(async() => {
   companyStore.companiesList();
@@ -19,6 +21,11 @@ function virgula(produtoras, filme) {
     return filme.title + ', ';
   }
 }
+
+function openCompany(companyId) {
+  router.push({ name: 'CompanyDetails', params: {companyId}});
+};
+
 
 </script>
 
@@ -41,7 +48,7 @@ function virgula(produtoras, filme) {
           <img :src="`https://image.tmdb.org/t/p/w500/${company.logo_path}`" alt="" class="company-image">
         </div>
         <div class="informacoes">
-          <h2>
+          <h2 @click="openCompany(company.id)">
             {{ company.name }}
           </h2>
           <h3>Conhecida Por</h3>
@@ -52,7 +59,7 @@ function virgula(produtoras, filme) {
         </span>
           </p>
           <div class='informacoes-homepage'>
-            <p ><a :href="`${company.homepage}`" v-if="company.homepage != ''" style="font-size: 0.75rem ">Site: {{ company.homepage }}</a></p>
+            <p><a :href="`${company.homepage}`" v-if="company.homepage != ''" style="font-size: 0.75rem ">Site: {{ company.homepage }}</a></p>
           </div>
         </div>
       </li>
@@ -99,7 +106,6 @@ function virgula(produtoras, filme) {
   height: 13rem;
   max-height: 16rem;
   object-fit: contain;
-  opacity: 1;
   border-radius: 4%;
   box-shadow: 0 0 0.1vw rgba(0, 0, 0, 0.1);
   cursor: pointer;
