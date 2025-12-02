@@ -2,9 +2,11 @@
 import { onMounted, ref, computed } from 'vue'
 import { useCartazStore } from '@/stores/cartaz'
 import { useMoviesStore } from '@/stores/movie';
+import { useRouter } from 'vue-router';
 
 const cartazStore = useCartazStore();
 const moviesStore = useMoviesStore();
+const router = useRouter();
 
 // Pega apenas o 5 primeiros filmes e remove repetidos
 const firstMovies = computed(() => {
@@ -37,7 +39,9 @@ const backgroundImage = computed(() => {
   }
 })
 
-//
+function openMovie(id) {
+  router.push({name: 'movie', params: {id}});
+};
 
 onMounted(async () => {
   let page = 1
@@ -74,7 +78,7 @@ onMounted(async () => {
       </div>
 
       <div class="btns">
-        <button class="btn-primary">Ver Detalhes</button>
+        <button class="btn-primary" @click="openMovie(movie?.id)">Ver Detalhes</button>
         <button class="btn-secondary">Assistir Mais Tarde</button>
       </div>
 

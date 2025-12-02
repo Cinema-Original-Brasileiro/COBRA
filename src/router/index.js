@@ -41,16 +41,6 @@ const router = createRouter({
       component: () => import('../views/CompanyDetailsView.vue'),
       props: true,
     },
-    {
-      path: '/favorites',
-      name: 'favorites',
-      component: () => import('../views/FavoritesView.vue')
-    },
-    {
-      path: '/watch-later',
-      name: 'watch later',
-      component: () => import('../views/WatchLaterView.vue')
-    },
   ],
 })
 
