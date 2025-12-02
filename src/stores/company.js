@@ -78,24 +78,23 @@ export const useCompaniesStore = defineStore('company', () => {
   const currentCompany = computed(() => state.currentCompany)
   const moviesCompany = computed(() => state.moviesCompany)
   const pages = computed(() => state.pages)
-  const pagesMovie = computed(() => state.pagesMovie)
 
   const companiesList = async () => {
     try {
       for (const idCompany of paginas[state.pages]) {
         const response = await api.get(`company/${idCompany}`)
-        
+
         const resultado = response.data;
 
         try {
-          const responseMovie = await moviesCompanyList(resultado.id);
+          await moviesCompanyList(resultado.id);
           resultado.movies = state.moviesCompany;
         } catch (error) {
           console.error('Erro filmes produtora CompaniesList', error);
         }
 
         state.companies.push(resultado);
-        
+
       }
     } catch (error) {
       console.error('Erro produtora ', error)
