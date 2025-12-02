@@ -2,6 +2,7 @@
   import { onMounted, computed } from 'vue'
   import { useRoute } from 'vue-router'
   import { useMoviesStore } from '@/stores/movie'
+  import MovieOverviewSection from '@/components/sections/movie-detail/MovieOverviewSection.vue'
 
   const route = useRoute()
   const movieStore = useMoviesStore()
@@ -20,8 +21,8 @@
   onMounted(async () => {
     const id = route.params.id
 
-    await movieStore.movieDetail(id)
-    await movieStore.logosList(id)
+    await movieStore.movieDetail(id);
+    await movieStore.logosList(id);
   })
   </script>
 
@@ -45,6 +46,9 @@
         </li>
       </ul>
     </section>
+
+    <MovieOverviewSection />
+
   </template>
   <style scoped>
   section {
@@ -96,7 +100,6 @@
         cursor: pointer;
       }
     }
-
   }
 
   </style>

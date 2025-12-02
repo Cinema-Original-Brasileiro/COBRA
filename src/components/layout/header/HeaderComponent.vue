@@ -53,7 +53,7 @@ const alternarDrop = () => {
       </ul>
 
       <div class="barra-pesquisa" ref="barraPesquisaTarget" v-else>
-        <input type="text" placeholder="Busque por algo" />
+        <input type="text" placeholder="Busque por algo" autofocus />
         <span class="mdi mdi-close" title="Fechar pesquisa" @click="alternarPesquisa"> </span>
       </div>
 
@@ -76,9 +76,9 @@ const alternarDrop = () => {
 /*==== ESTILIZAÇÃO GERAL DO HEADER ====*/
 
 header {
-  padding: 1vw 10vw;
-  background: rgba(255, 245, 238, 0.5);
-  backdrop-filter: blur(5px);
+  padding: 0.8vw 10vw;
+  background-color: #FFF5EE;
+  color: #080808;
   position: sticky;
   top: 0;
   z-index: 1000;
