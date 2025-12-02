@@ -1,91 +1,93 @@
 <script setup>
+import { onMounted, ref, computed } from 'vue'
+import { useMoviesStore } from '@/stores/movie'
+import { useGenreStore } from '@/stores/genre'
+import { useRouter } from 'vue-router'
 
-import { onMounted, ref, computed } from 'vue';
-import { useMoviesStore } from '@/stores/movie';
-import { useGenreStore } from '@/stores/genre';
-import { useRouter } from 'vue-router';
-
-const movieStore = useMoviesStore();
-const genreStore = useGenreStore();
+const movieStore = useMoviesStore()
+const genreStore = useGenreStore()
 const router = useRouter()
 
+let selecionarMaisPopulares = ref(false)
+let selecionarMelhoresAvaliados = ref(false)
+let selecionarUltimosLancamentos = ref(false)
+
 onMounted(async () => {
+  movieStore.moviesList()
+  movieStore.popularMoviesList()
+  movieStore.moviesTopFiveList()
+  movieStore.ultimosLancamentosList()
 
-  movieStore.moviesList();
-  movieStore.popularMoviesList();
-  movieStore.moviesTopFiveList();
-  movieStore.ultimosLancamentosList();
-
-  await genreStore.getAllGenres('movie');
-});
+  await genreStore.getAllGenres('movie')
+})
 
 function imagemClassificacao(classificacao) {
   if (classificacao === undefined) {
-    classificacao = 'L';
-  };
-  if (classificacao === 'R') {
-    classificacao = '18';
+    classificacao = 'L'
   }
-  return new URL(`../components/icons/${classificacao}.png`, import.meta.url).href;
-};
-
-function openMovie(movieId) {
-  router.push({ name: 'MovieDetails', params: { movieId } });
+  if (classificacao === 'R') {
+    classificacao = '18'
+  }
+  return new URL(`../components/icons/${classificacao}.png`, import.meta.url).href
 }
 
-let selecionarMaisPopulares = ref(false);
-let selecionarMelhoresAvaliados = ref(false);
-let selecionarUltimosLancamentos = ref(false);
+function openMovie(movieId) {
+  router.push({ name: 'MovieDetails', params: { movieId } })
+}
+
+function toggleDestaque(filtroParaAtivar) {
+  const eraAtivo =
+    (filtroParaAtivar === 'populares' && selecionarMaisPopulares.value) ||
+    (filtroParaAtivar === 'avaliados' && selecionarMelhoresAvaliados.value) ||
+    (filtroParaAtivar === 'lancamentos' && selecionarUltimosLancamentos.value)
+
+  selecionarMaisPopulares.value = false
+  selecionarMelhoresAvaliados.value = false
+  selecionarUltimosLancamentos.value = false
+
+  if (!eraAtivo) {
+    if (filtroParaAtivar === 'populares') {
+      selecionarMaisPopulares.value = true
+    } else if (filtroParaAtivar === 'avaliados') {
+      selecionarMelhoresAvaliados.value = true
+    } else if (filtroParaAtivar === 'lancamentos') {
+      selecionarUltimosLancamentos.value = true
+    }
+  }
+}
 
 const selecionadoFiltro = computed(() => {
-  if (selecionarMaisPopulares.value === true) {
-    movieStore.ultimosLancamentos = [];
-    movieStore.topFive = [];
-    movieStore.page = 1;
-    selecionarMelhoresAvaliados.value = false;
-    selecionarUltimosLancamentos.value = false;
-    return movieStore.popularMovies;
+  if (selecionarMaisPopulares.value) {
+    return movieStore.popularMovies
   }
-  if (selecionarMelhoresAvaliados.value === true) {
-    movieStore.ultimosLancamentos = [];
-    movieStore.popularMovies = [];
-    movieStore.page = 1;
-    selecionarMaisPopulares.value = false;
-    selecionarUltimosLancamentos.value = false;
-    return movieStore.topFive;
+  if (selecionarMelhoresAvaliados.value) {
+    return movieStore.topFive
   }
-  if (selecionarUltimosLancamentos.value === true) {
-    movieStore.popularMovies = [];
-    movieStore.topFive = [];
-    movieStore.page = 1;
-    selecionarMaisPopulares.value = false;
-    selecionarMelhoresAvaliados.value = false;
-    return movieStore.ultimosLancamentos;
+  if (selecionarUltimosLancamentos.value) {
+    return movieStore.ultimosLancamentos
   }
-  else {
-    movieStore.moviesList();
-    return movieStore.movies;
-  }
-});
-
+  return movieStore.movies
+})
 </script>
 
 <template>
-  <div class="caminhos">
-    <p>
-      <BreadcrumbComponent />
-    </p>
-  </div>
   <div class="main">
     <div class="filtros">
       <h1>Opções de Filtro</h1>
       <div class="generos">
         <h2>Por Gênero</h2>
         <ul>
-          <li v-for="genre in genreStore.genres" :key="genre.id" @click="genreStore.selectGenres(genre.id)"
-            class="genre-item" :class="{ active: genreStore.currentGenresId.includes(genre.id) }">
+          <li
+            v-for="genre in genreStore.genres"
+            :key="genre.id"
+            @click="genreStore.selectGenres(genre.id)"
+            class="genre-item"
+            :class="{ active: genreStore.currentGenresId.includes(genre.id) }"
+          >
             <label>
-              <input type="checkbox" name="checkbox" id="checkbox"><span class="genre-name">{{ genre.name }}</span>
+              <input type="checkbox" name="checkbox" id="checkbox" /><span class="genre-name">{{
+                genre.name
+              }}</span>
             </label>
           </li>
         </ul>
@@ -94,19 +96,30 @@ const selecionadoFiltro = computed(() => {
         <h2>Destaques Por</h2>
         <ul>
           <li>
-            <p @click="selecionarMaisPopulares = !selecionarMaisPopulares"
-              :class="{ selecionarMaisPopulares: selecionarMaisPopulares }">{{ selecionarMaisPopulares ? '-' : '+' }}
-              Mais populares <span class="quantidade">({{ movieStore.quantidadeFilmes[0] }})</span></p>
+            <p
+              @click="toggleDestaque('populares')"
+              :class="{ selecionarMaisPopulares: selecionarMaisPopulares }"
+            >
+              {{ selecionarMaisPopulares ? '-' : '+' }}
+              Mais populares <span class="quantidade">({{ movieStore.quantidadeFilmes[0] }})</span>
+            </p>
           </li>
           <li>
-            <p @click="selecionarMelhoresAvaliados = !selecionarMelhoresAvaliados"
-              :class="{ selecionarMelhoresAvaliados: selecionarMelhoresAvaliados }">{{ selecionarMelhoresAvaliados ? '-'
-                : '+' }} Melhores Avaliados <span class="quantidade">({{ movieStore.quantidadeFilmes[1] }})</span></p>
+            <p
+              @click="toggleDestaque('avaliados')"
+              :class="{ selecionarMelhoresAvaliados: selecionarMelhoresAvaliados }"
+            >
+              {{ selecionarMelhoresAvaliados ? '-' : '+' }} Melhores Avaliados
+              <span class="quantidade">({{ movieStore.quantidadeFilmes[1] }})</span>
+            </p>
           </li>
           <li>
-            <p @click="selecionarUltimosLancamentos = !selecionarUltimosLancamentos"
-              :class="{ selecionarUltimosLancamentos: selecionarUltimosLancamentos }">{{ selecionarUltimosLancamentos ?
-                '-' : '+' }} Últimos Lançamentos <span class="quantidade">({{ movieStore.quantidadeFilmes[2] }})</span>
+            <p
+              @click="toggleDestaque('lancamentos')"
+              :class="{ selecionarUltimosLancamentos: selecionarUltimosLancamentos }"
+            >
+              {{ selecionarUltimosLancamentos ? '-' : '+' }} Últimos Lançamentos
+              <span class="quantidade">({{ movieStore.quantidadeFilmes[2] }})</span>
             </p>
           </li>
         </ul>
@@ -123,13 +136,21 @@ const selecionadoFiltro = computed(() => {
       </div>
       <ul class="movies-items">
         <li v-for="movie in selecionadoFiltro" :key="movie.id" class="movies-card">
-          <img :src="`https://image.tmdb.org/t/p/w500${movie.poster_path}`" alt="movie.title" class="movie-image"
-            @click="openMovie(movie.id)">
+          <img
+            :src="`https://image.tmdb.org/t/p/w500${movie.poster_path}`"
+            alt="movie.title"
+            class="movie-image"
+            @click="openMovie(movie.id)"
+          />
           <h3 class="titulo">{{ movie.title }}</h3>
           <div>
-            <p class="horas" v-if="movie.runtime >= 0">{{ Math.floor(movie.runtime / 60) }}h {{ (movie.runtime % 60) }}m
+            <p class="horas" v-if="movie.runtime >= 0">
+              {{ Math.floor(movie.runtime / 60) }}h {{ movie.runtime % 60 }}m
             </p>
-            <img :src="imagemClassificacao(movie.classificacaoIndicativa)" class="classificacao-indicativa">
+            <img
+              :src="imagemClassificacao(movie.classificacaoIndicativa)"
+              class="classificacao-indicativa"
+            />
             <p class="ano">{{ movie.release_date.slice(0, 4) }}</p>
           </div>
         </li>
@@ -139,15 +160,14 @@ const selecionadoFiltro = computed(() => {
 </template>
 
 <style scoped>
-
-
 .caminhos {
-  background-color: #F9EFE7;
+  background-color: #f9efe7;
   width: 100%;
 }
 
 .main {
   display: flex;
+  padding: 1vw 10vw;
 }
 
 .generos {
@@ -155,7 +175,7 @@ const selecionadoFiltro = computed(() => {
   max-width: 18.5rem;
   min-height: 24rem;
   max-height: 24rem;
-  background-color: #F9EFE7;
+  background-color: #f9efe7;
   padding: 0.2vw 1vw 1vw 1vw;
   border-radius: 0.7vw;
 }
@@ -163,6 +183,7 @@ const selecionadoFiltro = computed(() => {
 .filtros {
   & h1 {
     font-size: 1.7rem;
+    margin-bottom: 2vw;
   }
   & h2 {
     font-size: 1.4rem;
@@ -184,24 +205,23 @@ const selecionadoFiltro = computed(() => {
 
 .generos ul li {
   font-size: 0.8rem;
-  color: #B2B2B2;
+  color: #b2b2b2;
   margin-bottom: 0.5vw;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-
-.generos ul li input[type="checkbox"] {
+.generos ul li input[type='checkbox'] {
   width: 0.8rem;
   height: 0.8rem;
   background-color: inherit;
   cursor: pointer;
 }
 
-.generos ul li input[type="checkbox"]:checked {
+.generos ul li input[type='checkbox']:checked {
   color: #009440;
-  accent-color: #4CAF50;
+  accent-color: #4caf50;
 }
 
 .generos ul li:active {
@@ -209,7 +229,7 @@ const selecionadoFiltro = computed(() => {
 }
 
 .destaques {
-  background-color: #F9EFE7;
+  background-color: #f9efe7;
   margin-top: 1.5vw;
   padding: 0.2vw 1vw 1vw 1vw;
   border-radius: 0.7vw;
@@ -223,7 +243,7 @@ const selecionadoFiltro = computed(() => {
 .destaques ul li p {
   margin: 0.3vw 0 0 0;
   font-size: 1rem;
-  color: #B2B2B2;
+  color: #b2b2b2;
   cursor: pointer;
 }
 
@@ -259,7 +279,7 @@ const selecionadoFiltro = computed(() => {
 
 .paginas button {
   margin-right: 1vw;
-  background-color: #F7E9DE;
+  background-color: #f7e9de;
   border: none;
   border-radius: 100%;
   cursor: pointer;
@@ -268,7 +288,7 @@ const selecionadoFiltro = computed(() => {
 
   & span {
     font-size: 1.6rem;
-    color: #EECFBA;
+    color: #eecfba;
   }
 
   &:hover {
@@ -276,7 +296,7 @@ const selecionadoFiltro = computed(() => {
     background-color: #edd0bb;
 
     & span {
-      color: #02E563;
+      color: #02e563;
       transition: 0.3s;
     }
   }
@@ -288,7 +308,7 @@ const selecionadoFiltro = computed(() => {
 }
 
 .movies-card {
-  background-color: #F9EFE7;
+  background-color: #f9efe7;
   padding: 1vw;
   margin: 0.5vw 2vw 1vw 0;
   min-height: 22rem;
@@ -305,8 +325,6 @@ const selecionadoFiltro = computed(() => {
   transition: 0.6s;
   box-shadow: 0.104vw 0.104vw 0.260416vw rgba(0, 0, 0, 0.1);
 }
-
-
 
 .movies-card div {
   display: flex;
@@ -345,6 +363,6 @@ const selecionadoFiltro = computed(() => {
 .movies-card p {
   font-size: 0.75rem;
   text-align: center;
-  color: #B2B2B2
+  color: #b2b2b2;
 }
 </style>
