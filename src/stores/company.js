@@ -57,7 +57,7 @@ const idCompanies = [
 
 // Paginação
 
-const itensPorPagina = 9;
+const itensPorPagina = 9
 const paginas = []
 
 for (let divisao = 0; divisao < idCompanies.length; divisao += itensPorPagina) {
@@ -84,18 +84,17 @@ export const useCompaniesStore = defineStore('company', () => {
     try {
       for (const idCompany of paginas[state.pages]) {
         const response = await api.get(`company/${idCompany}`)
-        
-        const resultado = response.data;
+
+        const resultado = response.data
 
         try {
-          const responseMovie = await moviesCompanyList(resultado.id);
-          resultado.movies = state.moviesCompany;
+          const responseMovie = await moviesCompanyList(resultado.id)
+          resultado.movies = state.moviesCompany
         } catch (error) {
-          console.error('Erro filmes produtora CompaniesList', error);
+          console.error('Erro filmes produtora CompaniesList', error)
         }
 
-        state.companies.push(resultado);
-        
+        state.companies.push(resultado)
       }
     } catch (error) {
       console.error('Erro produtora ', error)
@@ -132,18 +131,56 @@ export const useCompaniesStore = defineStore('company', () => {
     moviesCompanyList(companyId)
   }
 
-  const moviesCompanyList = async (companyId) => {
+  const moviesCompanyList = async (companyId, ano_lancamentos, escolha, votos) => {
     try {
       const response = await api.get(`discover/movie`, {
         params: {
           language: 'pt-BR',
           page: state.pagesMovie,
-          sort_by: 'popularity.desc',
+          primary_release_year: ano_lancamentos,
+          sort_by: escolha,
+          'vote_count.gte': votos,
           with_origin_country: 'BR',
           with_companies: companyId,
         },
       })
-      state.moviesCompany = response.data.results
+
+      const resultado = response.data.results
+
+      for (const movie of resultado) {
+        try {
+          const responseMovie = await api.get(`movie/${movie.id}`)
+          movie.runtime = responseMovie.data.runtime
+        } catch (error) {
+          console.error('Erro tempo de duração filme', error)
+        }
+
+        // Certifications (Classficação Indicativa)
+
+        try {
+          const responseMovie = await api.get(`movie/${movie.id}/release_dates`)
+          const resultado = responseMovie.data.results
+          const verificacaoBrasil = resultado.find((pais) => pais.iso_3166_1 === 'BR')
+          if (verificacaoBrasil == undefined || verificacaoBrasil == null) {
+            movie.classificacaoIndicativa = 'L'
+            break
+          }
+
+          const classificacaoValida = verificacaoBrasil.release_dates.find(
+            (classificacao) => classificacao.certification != '',
+          )
+
+          if (classificacaoValida?.certification == undefined) {
+            movie.classificacaoIndicativa = 'L'
+          } else {
+            movie.classificacaoIndicativa = classificacaoValida?.certification
+          }
+        } catch (error) {
+          console.error('Erro classificação indicativa:', error)
+        }
+
+        state.moviesCompany = resultado
+      }
     } catch (error) {
       console.error('Erro detalhes filmes da produtora ', error)
     }

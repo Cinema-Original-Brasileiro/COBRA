@@ -27,7 +27,13 @@ const router = createRouter({
     {
       path: '/companies',
       name: 'companies',
-      component: () => import('../views/CompaniesView.vue')
+      component: () => import('../views/CompaniesView.vue'),
+    },
+    {
+      path: '/companies/:companyId',
+      name: 'CompanyDetails',
+      component: () => import('../views/CompanyDetailsView.vue'),
+      props: true,
     },
     {
       path: '/favorites',

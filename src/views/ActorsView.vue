@@ -12,7 +12,6 @@ onMounted(async () => {
   await actorStore.moviesActorList();
 });
 
-
 function openActor(actorId) {
     router.push({ name: 'ActorDetails', params: {actorId} });
 }
