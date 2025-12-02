@@ -4,6 +4,7 @@
   import { useMoviesStore } from '@/stores/movie'
   import MovieOverviewSection from '@/components/sections/movie-detail/MovieOverviewSection.vue'
   import MovieInfosSection from '@/components/sections/movie-detail/MovieInfosSection.vue'
+  import CastMovieSection from '@/components/sections/movie-detail/CastMovieSection.vue'
 
   const route = useRoute()
   const movieStore = useMoviesStore()
@@ -52,6 +53,8 @@
       <MovieOverviewSection />
       <MovieInfosSection />
     </div>
+
+    <CastMovieSection />
 
   </template>
   <style scoped>
@@ -108,6 +111,6 @@
 
   .movie-informations {
     display: flex;
-    
+
   }
   </style>

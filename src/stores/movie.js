@@ -301,8 +301,8 @@ export const useMoviesStore = defineStore('movies', () => {
 
       const resultado = response.data.cast;
 
-      const filterCast = resultado.filter((individual) => individual.known_for_department === 'Acting' || individual.known_for_department === 'Directing');
-    state.castMovie = filterCast;
+      const filterCast = resultado.filter((individual) => individual.known_for_department === 'Acting');
+      state.castMovie = filterCast;
 
   } catch(error) {
       console.error('Erro elenco do filme ', error);
