@@ -3,6 +3,7 @@
   import { useRoute } from 'vue-router'
   import { useMoviesStore } from '@/stores/movie'
   import MovieOverviewSection from '@/components/sections/movie-detail/MovieOverviewSection.vue'
+  import MovieInfosSection from '@/components/sections/movie-detail/MovieInfosSection.vue'
 
   const route = useRoute()
   const movieStore = useMoviesStore()
@@ -47,12 +48,15 @@
       </ul>
     </section>
 
-    <MovieOverviewSection />
+    <div class="movie-informations">
+      <MovieOverviewSection />
+      <MovieInfosSection />
+    </div>
 
   </template>
   <style scoped>
   section {
-    margin: 1vw 10vw;
+    margin: 0 10vw;
   }
 
   .banner {
@@ -102,4 +106,8 @@
     }
   }
 
+  .movie-informations {
+    display: flex;
+    
+  }
   </style>

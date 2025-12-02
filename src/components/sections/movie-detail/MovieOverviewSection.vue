@@ -41,8 +41,8 @@ trailer.value = trailers?.[0];
   background-color: #F9EFE7;
   margin-top: 8vw;
   padding: 3vw;
-  width: 45%;
   border-radius: 15px;
+  width: 45%;
 
   .movie-trailer {
   width: 100%;

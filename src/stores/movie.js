@@ -353,5 +353,14 @@ export const useMoviesStore = defineStore('movies', () => {
     }
   }
 
-  return { movies, topFive, popularMovies, ultimosLancamentos, currentMovie, castMovie, quantidadeFilmes, moviesList, moviePageUp, moviePageDown, moviesTopFiveList, popularMoviesList, ultimosLancamentosList, movieDetail, castMovieList, logosList, addLogoToMovie, trailerMovie };
+  const watchProvidesList = async (movieId) => {
+    try {
+      const response = await api.get(`movie/${movieId}/watch/providers`);
+      return response.data.results?.BR
+    } catch (error) {
+      console.error('Erro ao pegar onde assistir', error)
+    }
+  }
+
+  return { movies, topFive, popularMovies, ultimosLancamentos, currentMovie, castMovie, quantidadeFilmes, moviesList, moviePageUp, moviePageDown, moviesTopFiveList, popularMoviesList, ultimosLancamentosList, movieDetail, castMovieList, logosList, addLogoToMovie, trailerMovie, watchProvidesList };
 });
