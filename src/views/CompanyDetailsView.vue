@@ -113,9 +113,7 @@ function imagemClassificacao(classificacao) {
                 <ul style="margin-top: 3vw;">
                     <li v-for="movie in selecionadoFiltro()" :key="movie.id" class="movies-card"
                         @mouseenter="hover = movie.id" @mouseleave="hover = null">
-                        <!-- <img :src="`https://image.tmdb.org/t/p/w500${movie.poster_path}`" alt="movie.title" class="movie-image" @click="openMovie(movie.id)"> -->
-                        <img :src="`https://image.tmdb.org/t/p/w500/c4ZEAah5a01cu27w7vT2IAoFogk.jpg`" alt="movie.title"
-                            class="movie-image" @click="openMovie(movie.id)">
+                        <img :src="`https://image.tmdb.org/t/p/w500${movie.poster_path}`" alt="movie.title" class="movie-image" @click="openMovie(movie.id)">
                         <div v-show="hover === movie.id" style="display: flex; flex-direction: column; margin-bottom: 0; gap: 0rem; transition: 0.5s;">
                             <h3 class="titulo"
                             :style="{fontSize: (movie.title).length > 20 ? '0.85rem' : '1rem' }"
