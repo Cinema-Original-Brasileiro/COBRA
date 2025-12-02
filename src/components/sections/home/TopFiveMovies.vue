@@ -2,7 +2,9 @@
 import { onMounted, computed, ref } from 'vue'
 import { useMoviesStore } from '@/stores/movie'
 import { useGenreStore } from '@/stores/genre'
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 const moviesStore = useMoviesStore();
 const genreStore = useGenreStore();
 
@@ -33,6 +35,10 @@ const setMovieDetails = async (index) => {
   await moviesStore.movieDetail(selectedMovie?.id)
 }
 
+function openMovie(id) {
+  router.push({name: 'movie', params: {id}});
+};
+
 onMounted(async () => {
   await moviesStore.moviesTopFiveList();
   await moviesStore.addLogoToMovie(moviesStore.topFive);
@@ -60,7 +66,7 @@ onMounted(async () => {
       <div class="infos-movie">
         <img :src="`https://image.tmdb.org/t/p/original${movie?.logo_path}`" :alt="movie?.title" />
         <p>{{ movieDetails?.tagline }}</p>
-        <button class="btn-primary">Ver Detalhes</button>
+        <button class="btn-primary" @click="openMovie(movie?.id)">Ver Detalhes</button>
       </div>
 
       <ul class="ranking-list">

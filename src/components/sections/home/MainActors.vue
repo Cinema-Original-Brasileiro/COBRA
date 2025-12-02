@@ -2,11 +2,18 @@
 import { onMounted } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useActorsStore } from '@/stores/actor'
+import { useRouter } from 'vue-router'
 
-const actorStore = useActorsStore()
+const actorStore = useActorsStore();
+const router = useRouter();
+
 
 const profileImage = (actor) => {
   return actor?.profile_path ? `url(https://image.tmdb.org/t/p/w500${actor.profile_path})` : ''
+}
+
+function openActor(actorId) {
+  router.push({ name: 'ActorDetails', params: { actorId } })
 }
 
 onMounted(() => {
@@ -26,6 +33,7 @@ onMounted(() => {
         :key="a.id"
         class="actor-card"
         :style="{  backgroundImage: `linear-gradient(to top, rgba(0,0,0, 0.8), rgba(0,0,0,0)), ${profileImage(a)}` }"
+        @click="openActor(a.id)"
       >
         <h3> {{ a.name }}</h3>
         <p>{{ a.biography.slice(0, 40) }}...</p>

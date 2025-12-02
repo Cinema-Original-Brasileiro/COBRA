@@ -93,7 +93,7 @@ function selecionadoFiltro() {
     return actorStore.moviesActor;
 };
 
-const LimiteBiografia = 450; 
+const LimiteBiografia = 450;
 
 const expandido = ref(false);
 
@@ -181,6 +181,7 @@ function cortarTexto(biografia) {
 <style scoped>
 .main {
     display: flex;
+    padding: 1vw 10vw;
 }
 
 .ator {
