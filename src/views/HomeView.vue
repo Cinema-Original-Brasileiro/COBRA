@@ -33,7 +33,7 @@ onMounted(async () => {
   <section class="latest-releases">
     <div class="section-header">
       <h2>Últimos Lançamentos</h2>
-      <RouterLink>Ver Mais <span class="mdi mdi-chevron-right"></span></RouterLink>
+      <RouterLink to="/movies">Ver Mais <span class="mdi mdi-chevron-right"></span></RouterLink>
     </div>
     <ul class="movie-list">
       <li v-for="m in latestReleases" :key="m.id" class="movie">
@@ -64,7 +64,7 @@ onMounted(async () => {
   <section class="most-popular">
     <div class="section-header">
       <h2>Mais Populares</h2>
-      <RouterLink>Ver Mais <span class="mdi mdi-chevron-right"></span></RouterLink>
+      <RouterLink to="/movies">  Ver Mais <span class="mdi mdi-chevron-right"></span></RouterLink>
     </div>
     <ul class="movie-list">
       <li v-for="m in mostPopular" :key="m.id" class="movie">

@@ -2,8 +2,11 @@
 
 import { defineProps, onMounted, ref } from 'vue';
 import { useCompaniesStore } from '@/stores/company';
+import { useRouter } from 'vue-router';
 
 const companyStore = useCompaniesStore();
+
+const router = useRouter();
 
 const props = defineProps({
     companyId: {
@@ -54,6 +57,10 @@ function selecionadoFiltro() {
 // Hover sobre a imagem
 
 const hover = ref(null);
+
+function openMovie(id) {
+  router.push({name: 'movie', params: {id}});
+};
 
 // Função para a classificação do filme
 

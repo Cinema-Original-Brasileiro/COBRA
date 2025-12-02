@@ -4,7 +4,6 @@ import { onClickOutside } from '@vueuse/core'
 import { useRoute } from 'vue-router'
 import Logo from '/images/logo-lightmode.svg'
 import BarraPesquisaComp from './BarraPesquisaComp.vue'
-import DropDownComp from './DropDownComp.vue'
 import router from '@/router'
 
 const route = useRoute()
@@ -22,15 +21,6 @@ const alternarPesquisa = () => {
   pesquisaAtiva.value = !pesquisaAtiva.value
 }
 
-// Controla a exibição do dropdown
-const dropAberto = ref(false);
-const dropdownTarget = ref(null);
-onClickOutside(dropdownTarget, () => {
-  dropAberto.value = false
-})
-const alternarDrop = () => {
-  dropAberto.value = !dropAberto.value
-}
 </script>
 
 <template>
@@ -42,10 +32,8 @@ const alternarDrop = () => {
 
       <ul v-if="pesquisaAtiva === false" class="nav-list">
         <li @click="router.push('/')" :class="paginaAtual('/')">Início</li>
-        <li @click="router.push('/movies')" :class="paginaAtual('/movies')" ref="dropdownTarget" style="margin-right: 1vw;">
+        <li @click="router.push('/movies')" :class="paginaAtual('/movies')" style="margin-right: 1vw;">
           Filmes
-          <span @click.stop="alternarDrop" :class="dropAberto ? 'mdi mdi-chevron-up' : 'mdi mdi-chevron-down'" ></span>
-          <drop-down-comp style="position: absolute;" v-if="dropAberto" />
         </li>
         <li :class="paginaAtual('/actors')" @click="router.push('/actors')">Atores</li>
         <li :class="paginaAtual('/companies')" @click="router.push('/companies')">Produtoras</li>

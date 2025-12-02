@@ -2,7 +2,7 @@
 
 import { useCompaniesStore } from '@/stores/company';
 import { onMounted } from 'vue';
-import { useRouter } from 'vue-router'; 
+import { useRouter } from 'vue-router';
 
 const companyStore = useCompaniesStore();
 const router = useRouter();
@@ -15,7 +15,7 @@ onMounted(async() => {
 function virgula(produtoras, filme) {
   if (produtoras.slice(0, 3).indexOf(filme) === 2 || produtoras.length === 1) {
     return filme.title;
-  } 
+  }
 
   else {
     return filme.title + ', ';
@@ -30,49 +30,55 @@ function openCompany(companyId) {
 </script>
 
 <template>
-  <h1>
-    Produtoras
-  </h1>
-  <div>
-  <div class="paginas">
-    <button class="descer-pagina" @click="companyStore.companiesPageDown()">
-      <span class="mdi mdi-chevron-left"></span>
-    </button>
-    <button class="subir-pagina" @click="companyStore.companiesPageUp()">
-      <span class="mdi mdi-chevron-right"></span>
-    </button>
-  </div>
-    <ul>
-      <li v-for="company in companyStore.companies" :key="company.id" class="company"> 
-        <div>
-          <img :src="`https://image.tmdb.org/t/p/w500/${company.logo_path}`" alt="" class="company-image">
-        </div>
-        <div class="informacoes">
-          <h2 @click="openCompany(company.id)">
-            {{ company.name }}
-          </h2>
-          <h3>Conhecida Por</h3>
-          <p>
-          <span v-for="movie in company.movies.slice(0, 3)" class="company-movies"
-          :style="{ fontSize: company.movies.slice(0, 3).length > 2 ? '0.7rem' : '0.8rem' }">
-          {{ company.movies.slice(0, 3).indexOf(movie) === 2 || (company.movies.slice(0, 3).indexOf(movie) === 1 && company.movies.length === 2) || company.movies.length === 1 ? movie.title : movie.title + ', ' }}
-        </span>
-          </p>
-          <div class='informacoes-homepage'>
-            <p><a :href="`${company.homepage}`" v-if="company.homepage != ''" style="font-size: 0.75rem ">Site: {{ company.homepage }}</a></p>
+  <div class="main">
+
+    <h1>
+      Produtoras
+    </h1>
+    <div>
+    <div class="paginas">
+      <button class="descer-pagina" @click="companyStore.companiesPageDown()">
+        <span class="mdi mdi-chevron-left"></span>
+      </button>
+      <button class="subir-pagina" @click="companyStore.companiesPageUp()">
+        <span class="mdi mdi-chevron-right"></span>
+      </button>
+    </div>
+      <ul>
+        <li v-for="company in companyStore.companies" :key="company.id" class="company">
+          <div>
+            <img :src="`https://image.tmdb.org/t/p/w500/${company.logo_path}`" alt="" class="company-image">
           </div>
-        </div>
-      </li>
-    </ul>
+          <div class="informacoes">
+            <h2 @click="openCompany(company.id)">
+              {{ company.name }}
+            </h2>
+            <h3>Conhecida Por</h3>
+            <p>
+            <span v-for="movie in company.movies.slice(0, 3)" class="company-movies"
+            :style="{ fontSize: company.movies.slice(0, 3).length > 2 ? '0.7rem' : '0.8rem' }">
+            {{ company.movies.slice(0, 3).indexOf(movie) === 2 || (company.movies.slice(0, 3).indexOf(movie) === 1 && company.movies.length === 2) || company.movies.length === 1 ? movie.title : movie.title + ', ' }}
+          </span>
+            </p>
+            <div class='informacoes-homepage'>
+              <p><a :href="`${company.homepage}`" v-if="company.homepage != ''" style="font-size: 0.75rem ">Site: {{ company.homepage }}</a></p>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 
 <style scoped>
 
+.main {
+  padding: 1vw 10vw;
+}
+
 .paginas {
-  margin-top: 1.2rem;
+  margin: 1.2rem 0;
   display: flex;
-  margin-left: 2.55vw;
 }
 
 .paginas button {
