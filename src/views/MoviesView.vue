@@ -32,7 +32,7 @@ function imagemClassificacao(classificacao) {
 }
 
 function openMovie(movieId) {
-  router.push({ name: 'MovieDetails', params: { movieId } })
+  router.push({ name: 'movie', params: { id: movieId } })
 }
 
 function toggleDestaque(filtroParaAtivar) {
@@ -135,12 +135,11 @@ const selecionadoFiltro = computed(() => {
         </button>
       </div>
       <ul class="movies-items">
-        <li v-for="movie in selecionadoFiltro" :key="movie.id" class="movies-card">
+        <li v-for="movie in selecionadoFiltro" :key="movie.id" class="movies-card" @click="openMovie(movie.id)">
           <img
             :src="`https://image.tmdb.org/t/p/w500${movie.poster_path}`"
             alt="movie.title"
             class="movie-image"
-            @click="openMovie(movie.id)"
           />
           <h3 class="titulo">{{ movie.title }}</h3>
           <div>
