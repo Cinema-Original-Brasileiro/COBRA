@@ -3,8 +3,10 @@
 import { ref, computed, onMounted } from 'vue';
 import { useActorsStore } from '@/stores/actor';
 import { defineProps } from 'vue';
+import { useRouter } from 'vue-router';
 
 const actorStore = useActorsStore();
+const router = useRouter();
 
 const props = defineProps({
     actorId: {
@@ -32,6 +34,9 @@ function actorGender(gender) {
         return 'Não binário';
     }
 }
+function openMovie(id) {
+  router.push({name: 'movie', params: {id}});
+};
 
 // Artigo que usei para pegar dia atual
 // https://www.freecodecamp.org/portuguese/news/date-now-em-javascript-como-obter-a-data-atual-em-javascript/
@@ -168,8 +173,10 @@ function cortarTexto(biografia) {
                 </div>
                 <ul>
                     <li v-for="movie in selecionadoFiltro()" :key="movie.id" class="movies-card">
-                        <img :src="`https://image.tmdb.org/t/p/w500/${movie.poster_path}`" alt="movie.title"
-                            class="movie-image">
+                        <img :src="`https://image.tmdb.org/t/p/w500/${movie.poster_path}`" alt="movie.title "
+                            class="movie-image"
+                            @click="openMovie(movie.id)"
+                            >
                     </li>
                 </ul>
             </div>
